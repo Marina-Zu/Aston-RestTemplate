@@ -6,8 +6,8 @@
     <artifactId>post_service</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>post_service Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+    <name>post_service Maven</name>
+    <url>http://localhost:8081</url>
 
     <dependencies>
         <dependency>
@@ -36,10 +36,27 @@
             <version>3.1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.5.Final</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
         <finalName>post_service</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
