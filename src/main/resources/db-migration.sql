@@ -22,3 +22,11 @@ CREATE TABLE album
     title       varchar(256) NOT NULL,
     description varchar(4096) NOT NULL
 );
+
+INSERT INTO users (username)
+VALUES
+    ('Harry Potter'),
+    ('Hermione Granger'),
+    ('Ronald Weasley'),
+    ('Draco Malfoy'),
+    ('Neville Longbottom');

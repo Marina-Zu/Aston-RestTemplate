@@ -154,3 +154,13 @@ i
 9src/main/java/org/example/repository/AlbumRepository.java,6\4\644ed9d94a6a1706f577d8a6a75b79ac3380e482
 w
 G.idea/sonarlint/issuestore/0/6/0652ed2247a0ba216652c2e282608211a696169b,2\a\2a923dacb593819d9043f563ad2262213616e726
+i
+9src/main/java/org/example/exeption/NotFoundException.java,0\d\0d9e3c22b165c1aedb7134d30918ad6ffa6b0068
+i
+9src/main/java/org/example/db/HikariConnectionManager.java,c\4\c4de9cadaaa52885afb20121ae7b1ca91b7f1458
+v
+Fsrc/main/java/org/example/repository/mapper/SimpleResultSetMapper.java,b\2\b2517f8cfcb9227a00effb73acbcd71c103c0fc0
+t
+Dsrc/main/java/org/example/repository/mapper/UserResultSetMapper.java,8\a\8aae471736f27a50173f4d9551e7cedb4bf2478d
+x
+Hsrc/main/java/org/example/repository/mapper/UserResultSetMapperImpl.java,4\1\414150f7b67cc9c16040b99f07ab69f6ddaad319

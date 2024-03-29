@@ -14,5 +14,4 @@ public interface Repository<T, K> {
 
     List<T> findAll();
 
-    boolean existById(K id);
 }

@@ -31,6 +31,11 @@ public class User {
         this.albums = albums;
     }
 
+    public User(long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
     public long getId() {
         return id;
     }
