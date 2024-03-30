@@ -8,6 +8,7 @@ import org.example.service.UserService;
 import org.example.servlet.dto.UserIncomingDto;
 import org.example.servlet.dto.UserOutGoingDto;
 import org.example.servlet.mapper.UserDtoMapper;
+import org.example.servlet.mapper.impl.UserDtoMapperImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,8 +20,9 @@ import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
-    private static UserDtoMapper userDtoMapper ;
+    private static UserDtoMapper userDtoMapper = UserDtoMapperImpl.getInstance();
     private static UserService instance;
+
     private UserServiceImpl(UserDtoMapper userDtoMapper) {
         this.userDtoMapper = userDtoMapper;
     }
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
         }
         return instance;
     }
+
     @Override
     public UserOutGoingDto save(UserIncomingDto userIncomingDto) {
         User user = userRepository.save(userDtoMapper.map(userIncomingDto));
@@ -59,36 +62,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserOutGoingDto> findById(long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            UserOutGoingDto userDto = userDtoMapper.map(user);
-            return Optional.of(userDto);
-        } else {
-            return Optional.empty();
-        }
+    public UserOutGoingDto findById(long id) {
+        User user = userRepository.findById(id);
+        return userDtoMapper.map(user);
     }
+
 
     @Override
     public List<UserOutGoingDto> findAll() {
-            String SQL_QUERY = "select * from users";
-            List<User> employees = null;
-            try (Connection con = HikariConnectionManager.getInstance().getConnection();
-                 PreparedStatement pst = con.prepareStatement(SQL_QUERY);
-                 ResultSet rs = pst.executeQuery();) {
-                employees = new ArrayList<>();
-                User user;
-                while (rs.next()) {
-                    user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setUsername(rs.getString("username"));
+        String SQL_QUERY = "select * from users";
+        List<User> employees = null;
+        try (Connection con = HikariConnectionManager.getInstance().getConnection();
+             PreparedStatement pst = con.prepareStatement(SQL_QUERY);
+             ResultSet rs = pst.executeQuery();) {
+            employees = new ArrayList<>();
+            User user;
+            while (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
 
-                    employees.add(user);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                employees.add(user);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return userDtoMapper.map(employees);
 
     }

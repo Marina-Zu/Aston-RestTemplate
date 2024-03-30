@@ -114,7 +114,7 @@ public class UserServlet extends HttpServlet {
                 responseAnswer = objectMapper.writeValueAsString(userDtoList);
             } else {
                 Long userId = Long.parseLong(pathPart[1]);
-                UserOutGoingDto userDto = userService.findById(userId).orElseThrow(() -> new RuntimeException("Null"));
+                UserOutGoingDto userDto = userService.findById(userId);
                 resp.setStatus(HttpServletResponse.SC_OK);
                 responseAnswer = objectMapper.writeValueAsString(userDto);
             }

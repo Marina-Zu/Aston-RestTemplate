@@ -15,7 +15,7 @@ public interface UserService {
 
     boolean deleteById(long id);
 
-    Optional<UserOutGoingDto> findById(long id);
+    UserOutGoingDto findById(long id);
 
     List<UserOutGoingDto> findAll();
 

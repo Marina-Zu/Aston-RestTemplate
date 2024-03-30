@@ -6,6 +6,8 @@ import org.example.model.User;
 import org.example.exeption.RepositoryException;
 import org.example.repository.UserRepository;
 import org.example.repository.mapper.UserResultSetMapper;
+import org.example.repository.mapper.UserResultSetMapperImpl;
+import org.mapstruct.control.MappingControl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
             WHERE user_id = ?;
             """;
     private static final String FIND_BY_ID_SQL = """
-            SELECT user FROM users
+            SELECT * FROM users
             WHERE id = ?
             LIMIT 1;
             """;
@@ -45,7 +47,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static UserRepository instance;
     private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
- private UserResultSetMapper resultSetMapper;
 
     public static synchronized UserRepository getInstance() {
         if (instance == null) {
@@ -105,38 +106,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-//        try (Connection connection = connectionManager.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-//
-//            preparedStatement.setLong(1, id);
-//
-//            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    return Optional.of(createUser(resultSet));
-//                } else {
-//                    return Optional.empty();
-//                }
-//            }
-//        } catch (SQLException e) {
-//            return Optional.empty();
-//        }
-        User user = null;
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-
+    public User findById(Long id) {
+        User user = new User();
+        try {
+            Connection connection = connectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL);
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                user = createUser(resultSet);
+            while (resultSet.next()) {
+                String username = resultSet.getString("username");
+                user = new User(id, username);
             }
         } catch (SQLException e) {
-            throw new RepositoryException(e);
+            throw new RuntimeException(e);
         }
-        return Optional.ofNullable(user);
+        return user;
     }
-
     @Override
     public List<User> findAll() {
         List<User> userList = new ArrayList<>();
@@ -157,8 +143,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     private User createUser(ResultSet resultSet) throws SQLException {
         User user = new User();
-        user.setId(resultSet.getLong("user_id"));
-        user.setUsername(resultSet.getString("name"));
+        user.setId(resultSet.getLong("id"));
+        user.setUsername(resultSet.getString("username"));
         return user;
     }
 
