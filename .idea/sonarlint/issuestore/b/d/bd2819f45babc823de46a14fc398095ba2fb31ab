@@ -1,15 +1,14 @@
 
-	java:S112z"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Ğ½Şúè1J$9ae8844d-19ca-4875-a1e5-1f7266ad3f8a
 ’
-java:S2095q"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(ãİ†ô8Ø½Şúè1J$06e0ceaa-1fba-4e56-a01f-f95fe2a6dd70
+java:S2095l"OUse try-with-resources or close this "PreparedStatement" in a "finally" clause.(ãİ†ô8À²†üè1J$a02a446b-fafb-4164-9a47-57407beccf92
 ‘
-java:S1128"NRemove this unused import 'org.example.repository.mapper.UserResultSetMapper'.(ƒä¸Ú8ß½Şúè1J$3bb4b14b-a939-4e26-ae31-7350eb4d1ea1
+java:S1128"NRemove this unused import 'org.example.repository.mapper.UserResultSetMapper'.(ƒä¸Ú8âçŞıè1J$c4a58409-9534-4526-8cfb-9dc6c995aa71
 š
-java:S1128	"RRemove this unused import 'org.example.repository.mapper.UserResultSetMapperImpl'.(®×â£şÿÿÿÿ8ß½Şúè1J$9303b6b2-6e0b-4a91-b95a-af3c36525cb3
+java:S1128	"RRemove this unused import 'org.example.repository.mapper.UserResultSetMapperImpl'.(®×â£şÿÿÿÿ8ãçŞıè1J$f9a1b24a-3cd4-4a09-98e2-537ebaf366ea
 ‰
 java:S1128
-"ARemove this unused import 'org.mapstruct.control.MappingControl'.(¡½¦ëşÿÿÿÿ8ß½Şúè1J$ea3e42de-90b8-4fbe-b6b8-c1278fe4b744
+"ARemove this unused import 'org.mapstruct.control.MappingControl'.(¡½¦ëşÿÿÿÿ8ãçŞıè1J$4f270dbc-d692-4a28-b5d5-81848ebf806a
 w
-java:S1128"/Remove this unused import 'java.util.Optional'.(¨˜ëİüÿÿÿÿ8ß½Şúè1J$98c8483d-4fa4-4f6b-93d5-d1dd85932169
+java:S1128"/Remove this unused import 'java.util.Optional'.(¨˜ëİüÿÿÿÿ8ãçŞıè1J$39e1a47c-3f63-42ff-91d4-3d5ad5e2464a
 {
-java:S1068("3Remove this unused "EXIST_BY_ID_SQL" private field.(ôğÂâşÿÿÿÿ8ß½Şúè1J$90efed62-b3f1-4c52-8cd5-7567509687b6
+java:S1068("3Remove this unused "EXIST_BY_ID_SQL" private field.(ôğÂâşÿÿÿÿ8Î²†üè1J$4f312ba9-bc5d-42bb-b378-502297f66ce2

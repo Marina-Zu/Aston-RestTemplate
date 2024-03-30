@@ -4,14 +4,15 @@ public class UserIncomingDto {
     private long id;
     private String username;
 
-    public UserIncomingDto(){
-    }
-
-    public UserIncomingDto(long id) {
-        this.id = id;
+    public UserIncomingDto() {
     }
 
     public UserIncomingDto(String username) {
+        this.username = username;
+    }
+
+    public UserIncomingDto(long id, String username) {
+        this.id = id;
         this.username = username;
     }
 

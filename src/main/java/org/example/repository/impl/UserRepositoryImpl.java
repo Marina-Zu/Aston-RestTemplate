@@ -23,11 +23,11 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String UPDATE_SQL = """
             UPDATE users
             SET username = ?
-            WHERE user_id = ?;
+            WHERE id = ?;
             """;
     private static final String DELETE_SQL = """
             DELETE FROM users
-            WHERE user_id = ?;
+            WHERE id = ?;
             """;
     private static final String FIND_BY_ID_SQL = """
             SELECT * FROM users
@@ -35,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
             LIMIT 1;
             """;
     private static final String FIND_ALL_SQL = """
-            SELECT user_id, username FROM users;
+            SELECT * FROM users;
             """;
     private static final String EXIST_BY_ID_SQL = """
                 SELECT exists (
@@ -57,7 +57,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, user.getUsername());
@@ -65,13 +65,11 @@ public class UserRepositoryImpl implements UserRepository {
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
-                user.setId(resultSet.getLong("user_id"));
+                user.setId(resultSet.getLong("id"));
             }
-
         } catch (SQLException e) {
             throw new RepositoryException(e);
         }
-
         return user;
     }
 
@@ -82,7 +80,6 @@ public class UserRepositoryImpl implements UserRepository {
 
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setLong(2, user.getId());
-
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -93,12 +90,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean deleteById(Long id) {
         boolean deleteResult;
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
-
             preparedStatement.setLong(1, id);
             deleteResult = preparedStatement.executeUpdate() > 0;
-
         } catch (SQLException e) {
             throw new RepositoryException(e);
         }
@@ -109,35 +104,34 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(Long id) {
         User user = new User();
         try {
-            Connection connection = connectionManager.getConnection();
+            Connection connection = HikariConnectionManager.getInstance().getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL);
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                String username = resultSet.getString("username");
-                user = new User(id, username);
+                user = createUser(resultSet);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RepositoryException(e.getMessage());
         }
         return user;
     }
+
     @Override
     public List<User> findAll() {
-        List<User> userList = new ArrayList<>();
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
-
-            ResultSet resultSet = preparedStatement.executeQuery();
+        List<User> users = null;
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            users = new ArrayList<>();
             while (resultSet.next()) {
-                userList.add(createUser(resultSet));
+                users.add(createUser(resultSet));
             }
-
         } catch (SQLException e) {
-            throw new RepositoryException(e);
+            throw new RepositoryException(e.getMessage());
         }
-        return userList;
+        return users;
     }
 
 

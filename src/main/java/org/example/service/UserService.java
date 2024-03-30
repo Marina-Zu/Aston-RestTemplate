@@ -1,11 +1,9 @@
 package org.example.service;
 
-import org.example.model.User;
 import org.example.servlet.dto.UserIncomingDto;
 import org.example.servlet.dto.UserOutGoingDto;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface UserService {
@@ -18,7 +16,5 @@ public interface UserService {
     UserOutGoingDto findById(long id);
 
     List<UserOutGoingDto> findAll();
-
-    boolean existById(long id);
 
 }

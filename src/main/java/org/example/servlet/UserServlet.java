@@ -126,180 +126,64 @@ public class UserServlet extends HttpServlet {
         printWriter.write(responseAnswer);
         printWriter.flush();
     }
-//    private UserService userService = UserServiceImpl.getInstance();
-//    private ObjectMapper objectMapper;
-//
-//    public UserServlet() {
-//        this.objectMapper = new ObjectMapper();
-//    }
-//
-//    private static void setJsonHeader(HttpServletResponse resp) {
-//        resp.setContentType("application/json");
-//        resp.setCharacterEncoding("UTF-8");
-//    }
-//
-//    @Override
-//    // http://localhost:8081/user/{userId}
-//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        setJsonHeader(resp);
-//
-//        String responseAnswer = "";
-//        try {
-//            String[] pathPart = req.getPathInfo().split("/");
-//            if (pathPart.length > 1) {
-//                String userIdString = pathPart[1];
-//                if (!userIdString.isEmpty()) { // Добавляем проверку на пустую строку
-//                    long userId = Long.parseLong(userIdString);
-//                    UserOutGoingDto userDto = userService.findById(userId)
-//                            .orElseThrow(() -> new NotFoundException("User not found for ID: " + userId));
-//                    resp.setStatus(HttpServletResponse.SC_OK);
-//                    responseAnswer = objectMapper.writeValueAsString(userDto);
-//                } else {
-//                    throw new NotFoundException("User ID is missing");
-//                }
-//            } else {
-//                List<UserOutGoingDto> userDtoList = userService.findAll();
-//                resp.setStatus(HttpServletResponse.SC_OK);
-//                responseAnswer = objectMapper.writeValueAsString(userDtoList);
-//            }
-//        } catch (NumberFormatException e) {
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            responseAnswer = "Invalid user ID format";
-//        } catch (NotFoundException e) {
-//            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            responseAnswer = e.getMessage();
-//        } catch (Exception e) {
-//            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//            responseAnswer = "Internal server error occurred";
-//        }
-//
-//        PrintWriter printWriter = resp.getWriter();
-//        printWriter.write(responseAnswer);
-//        printWriter.flush();
-//    }
+
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        setJsonHeader(resp);
+        String responseAnswer = "";
+        try {
+            String[] pathPart = req.getPathInfo().split("/");
+            long userId = Long.parseLong(pathPart[1]);
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            userService.deleteById(userId);
+            responseAnswer = "User with id " + userId + " deleted";
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            responseAnswer = "Bad request.";
+        }
+        PrintWriter printWriter = resp.getWriter();
+        printWriter.write(responseAnswer);
+        printWriter.flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        setJsonHeader(resp);
+        String json = getJson(req);
+
+        String responseAnswer = null;
+        Optional<UserIncomingDto> userResponse;
+        try {
+            userResponse = Optional.ofNullable(objectMapper.readValue(json, UserIncomingDto.class));
+            UserIncomingDto user = userResponse.orElseThrow(IllegalArgumentException::new);
+            responseAnswer = objectMapper.writeValueAsString(userService.save(user));
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            responseAnswer = "Incorrect user Object.";
+        }
+        PrintWriter printWriter = resp.getWriter();
+        printWriter.write(responseAnswer);
+        printWriter.flush();
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        setJsonHeader(resp);
+        String json = getJson(req);
+
+        String responseAnswer = "";
+        UserIncomingDto userResponse;
+        try {
+            userResponse = objectMapper.readValue(json, UserIncomingDto.class);
+            userService.update(userResponse);
+            responseAnswer = "User update";
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            responseAnswer = "Incorrect user Object.";
+        }
+        PrintWriter printWriter = resp.getWriter();
+        printWriter.write(responseAnswer);
+        printWriter.flush();
+    }
 }
-
-//        resp.setContentType("text/html");
-//        PrintWriter printWriter = resp.getWriter();
-//        printWriter.write("Hello!");
-//
-//        setJsonHeader(resp);
-//
-//        String responseAnswer = "";
-//        try {
-//            String[] pathPart = req.getPathInfo().split("/");
-//            if ("all".equals(pathPart[pathPart.length - 1])) {
-//                List<UserOutGoingDto> userDtoList = userService.findAll();
-//                resp.setStatus(HttpServletResponse.SC_OK);
-//                responseAnswer = objectMapper.writeValueAsString(userDtoList);
-//            } else {
-//                long userId = Long.parseLong(pathPart[pathPart.length - 1]);
-//                UserOutGoingDto userDto = userService.findById(userId)
-//                        .orElseThrow(() -> new NotFoundException("User not found for ID: " + userId));
-//                resp.setStatus(HttpServletResponse.SC_OK);
-//                responseAnswer = objectMapper.writeValueAsString(userDto);
-//            }
-//        } catch (NotFoundException e) {
-//            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            responseAnswer = e.getMessage();
-//        } catch (Exception e) {
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            responseAnswer = "Bad request.";
-//        }
-//      //  printWriter = resp.getWriter();
-//        printWriter.write(responseAnswer);
-//        printWriter.flush();
-
-        //resp.getWriter().write("Method doGet\n");
-
-        // localhost:8081/user?id=1
-//        String userIdString = req.getParameter("id");
-//        if (userIdString == null || userIdString.isEmpty()) {
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            resp.getWriter().write("ID parameter is required");
-//            return;
-//        }
-//
-//        long userId;
-//        try {
-//            userId = Long.parseLong(userIdString);
-//        } catch (NumberFormatException e) {
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            resp.getWriter().write("Invalid ID parameter");
-//            return;
-//        }
-//
-//        Optional<UserOutGoingDto> userOptional = userService.findById(userId);
-//        if (userOptional.isEmpty()) {
-//            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            resp.getWriter().write("User not found");
-//            return;
-//        }
-//
-//        resp.setContentType("application/json");
-//        resp.setCharacterEncoding("UTF-8");
-//        resp.getWriter().write(objectMapper.writeValueAsString(userOptional.get()));
-
-//
-//    @Override
-//    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        setJsonHeader(resp);
-//        String responseAnswer = "";
-//        try {
-//            String[] pathPart = req.getPathInfo().split("/");
-//            long userId = Long.parseLong(pathPart[1]);
-//            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-//            userService.deleteById(userId);
-//        } catch (Exception e) {
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            responseAnswer = "Bad request.";
-//        }
-//        PrintWriter printWriter = resp.getWriter();
-//        printWriter.write(responseAnswer);
-//        printWriter.flush();
-
-
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        setJsonHeader(resp);
-//        String json = getJson(req);
-//
-//        String responseAnswer = null;
-//        Optional<UserIncomingDto> userResponse;
-//        try {
-//            userResponse = Optional.ofNullable(objectMapper.readValue(json, UserIncomingDto.class));
-//            UserIncomingDto user = userResponse.orElseThrow(IllegalArgumentException::new);
-//            responseAnswer = objectMapper.writeValueAsString(userService.save(user));
-//        } catch (Exception e) {
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            responseAnswer = "Incorrect user Object.";
-//        }
-//        PrintWriter printWriter = resp.getWriter();
-//        printWriter.write(responseAnswer);
-//        printWriter.flush();
-//    }
-
-//    @Override
-//    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        setJsonHeader(resp);
-//        String json = getJson(req);
-//
-//        String responseAnswer = "";
-//        Optional<UserUpdateDto> userResponse;
-//        try {
-//            userResponse = Optional.ofNullable(objectMapper.readValue(json, UserUpdateDto.class));
-//            UserUpdateDto userUpdateDto = userResponse.orElseThrow(IllegalArgumentException::new);
-//            userService.update(userUpdateDto);
-//        } catch (NotFoundException e) {
-//            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            responseAnswer = e.getMessage();
-//        } catch (Exception e) {
-//            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            responseAnswer = "Incorrect user Object.";
-//        }
-//        PrintWriter printWriter = resp.getWriter();
-//        printWriter.write(responseAnswer);
-//        printWriter.flush();
-//    }
-//    }
-

@@ -1,40 +1,37 @@
 
-~	java:S125!"<This block of commented-out lines of code should be removed.(íã» 8¿·ÈØè1J$8fd6c5e3-e4a0-4b22-ae4c-be06e53feb1a
+~	java:S125!"<This block of commented-out lines of code should be removed.(íã» 8‚µªıè1J$d5e7c0f6-c8a8-4378-9133-b152573eb15d
 ˜
-java:S1989}"PHandle the following exception that could be thrown by "getWriter": IOException.(¿—Èœùÿÿÿÿ8Ú·ÈØè1J$4674d8b3-e1ee-4f59-9904-3bc10b1a7ebb
-„	java:S125"<This block of commented-out lines of code should be removed.(€Ñ…Ôüÿÿÿÿ8Ú·ÈØè1J$cb79cc3e-492c-4b89-8a06-e89161bf4006
-	java:S125¶"<This block of commented-out lines of code should be removed.(×ç™‹8Ü·ÈØè1J$f340194f-0a0e-44eb-9f88-2fa750cdde2f
-	java:S125Õ"<This block of commented-out lines of code should be removed.(©‚Æ¢8Ü·ÈØè1J$6cd1ba75-bb7b-44bd-8d1c-4321c6b8c88c
-„	java:S125Ø"<This block of commented-out lines of code should be removed.(×¢¤ûÿÿÿÿ8Ü·ÈØè1J$f0502e03-a0a5-4dca-95d3-7381306d5dd9
-„	java:S125õ"<This block of commented-out lines of code should be removed.(¾øÏ¿ûÿÿÿÿ8Ü·ÈØè1J$59303630-f9cb-4f49-8199-ed6fb7299269
-„	java:S125‡"<This block of commented-out lines of code should be removed.(šäëØøÿÿÿÿ8Ü·ÈØè1J$b32a05ba-e17e-4851-9f00-f89b0be16480
-„	java:S125›"<This block of commented-out lines of code should be removed.(®¥”÷ùÿÿÿÿ8Ü·ÈØè1J$c6384ff8-ed48-49b3-9b9a-214267711632
+java:S1989}"PHandle the following exception that could be thrown by "getWriter": IOException.(¿—Èœùÿÿÿÿ8µªıè1J$4af72722-0bfe-423d-8f54-e148c4f3f700
+™
+java:S1989‘"PHandle the following exception that could be thrown by "getWriter": IOException.(¿—Èœùÿÿÿÿ8µªıè1J$f5b576a5-5ff4-4711-8d0e-5c325bcc63c6
+’
+java:S1989™"NHandle the following exception that could be thrown by "getJson": IOException.(¥ÖÃæ8‘µªıè1J$f553792f-b782-4e4a-8ba0-1b4a92dbf8e0
+™
+java:S1989¥"PHandle the following exception that could be thrown by "getWriter": IOException.(¿—Èœùÿÿÿÿ8‘µªıè1J$cbccb5e1-f212-4d92-b114-e524e0c02a45
+’
+java:S1989­"NHandle the following exception that could be thrown by "getJson": IOException.(¥ÖÃæ8’µªıè1J$74aef0a8-e626-4173-983b-273a1584284d
+™
+java:S1989¹"PHandle the following exception that could be thrown by "getWriter": IOException.(¿—Èœùÿÿÿÿ8’µªıè1J$847c7c1a-779f-4e7d-afbe-2359facc8008
 €
-java:S1128"=Remove this unused import 'jakarta.servlet.ServletException'.(®Â­Ç8şå÷è1J$ebcb6c01-540d-4292-b6d5-684ee76a1072
+java:S1128"=Remove this unused import 'jakarta.servlet.ServletException'.(®Â­Ç8“µªıè1J$64c03710-332d-43ff-a294-869c5b140d93
 €
 java:S1128
-"=Remove this unused import 'org.example.db.ConnectionManager'.(”Ùö8ÿå÷è1J$aff8286d-251b-4380-be19-86e25f6c6e17
+"=Remove this unused import 'org.example.db.ConnectionManager'.(”Ùö8“µªıè1J$7757e3fa-e987-43d7-971e-a5aec21a69d7
 ‹
-java:S1128"CRemove this unused import 'org.example.db.HikariConnectionManager'.(úä¯Çúÿÿÿÿ8ÿå÷è1J$d9fb7894-e67d-438c-b30a-fe6d4e4c2843
+java:S1128"CRemove this unused import 'org.example.db.HikariConnectionManager'.(úä¯Çúÿÿÿÿ8“µªıè1J$dbda8982-04f0-4409-afaf-a4e0fbde7be7
 …
-java:S1128"CRemove this unused import 'org.example.exeption.NotFoundException'.(øî 8ÿå÷è1J$6ffdc973-6f52-4c3e-a268-d760a3692cd2
+java:S1128"CRemove this unused import 'org.example.exeption.NotFoundException'.(øî 8“µªıè1J$8bffaae9-2c24-41d7-b7ec-1a38c0979474
 v
-java:S1128"3Remove this unused import 'org.example.model.User'.(”óÛÚ8ÿå÷è1J$fbb2d64d-c89c-4426-a10e-eb00eb62be35
+java:S1128"3Remove this unused import 'org.example.model.User'.(”óÛÚ8“µªıè1J$065ac741-6d94-43a7-8770-5a38624a4737
 ‡
-java:S1128"DRemove this unused import 'org.example.servlet.dto.UserIncomingDto'.(á’•Ÿ8ÿå÷è1J$d5879b6a-b48e-4b3e-9765-64c700996691
-‡
-java:S1128"ERemove this unused import 'org.example.servlet.mapper.UserDtoMapper'.(Ãöìw8ÿå÷è1J$6e9343d9-ee56-46dc-b28d-94f2dcbcb125
+java:S1128"ERemove this unused import 'org.example.servlet.mapper.UserDtoMapper'.(Ãöìw8“µªıè1J$f6c44bfd-e117-40a4-9117-6ec83c0b7e73
 s
-java:S1128"0Remove this unused import 'java.sql.Connection'.(¥ËôÖ8ÿå÷è1J$43c79ff0-11b6-4846-acc7-07a8dc9c975c
+java:S1128"0Remove this unused import 'java.sql.Connection'.(¥ËôÖ8“µªıè1J$ffa6e424-e847-4c8c-907d-54b1a3c1eb73
 
-java:S1128"7Remove this unused import 'java.sql.PreparedStatement'.(òÄ™ƒÿÿÿÿÿ8ÿå÷è1J$912bd30a-540e-4b42-aa31-c1da23420acc
+java:S1128"7Remove this unused import 'java.sql.PreparedStatement'.(òÄ™ƒÿÿÿÿÿ8“µªıè1J$c8375f39-8b3b-47e5-9eef-0cc21524fdee
 q
-java:S1128"/Remove this unused import 'java.sql.ResultSet'.(ˆóÚw8ÿå÷è1J$755de519-1f4c-4931-9da5-da3f80009a75
+java:S1128"/Remove this unused import 'java.sql.ResultSet'.(ˆóÚw8“µªıè1J$94881de0-169d-41a3-ae7d-3ea1131e9a35
 u
-java:S1128"2Remove this unused import 'java.sql.SQLException'.(ÛïÆŸ8ÿå÷è1J$d7c920e8-fc05-4f66-923d-fce80910fc00
+java:S1128"2Remove this unused import 'java.sql.SQLException'.(ÛïÆŸ8“µªıè1J$c1e1abd8-579d-4c20-8619-3c3adcfd0caf
 s
-java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ÿå÷è1J$e12d3735-3010-4bf3-874f-90f5f6b16692
-w
-java:S1128"/Remove this unused import 'java.util.Optional'.(¨˜ëİüÿÿÿÿ8ÿå÷è1J$529df5e5-2486-44cc-bd5c-c70b04111858
-o
-java:S1144^",Remove this unused private "getJson" method.(€¥î½8İ·ÈØè1J$6d5bdb1d-4d5b-41d9-83d4-7201417b6933
+java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8“µªıè1J$b1bf466f-caad-48d4-a5da-d1a23ceed6c6

@@ -40,8 +40,7 @@ public class UserDtoMapperImpl implements UserDtoMapper {
         if (user == null) {
             return null;
         }
-        //  return new UserOutGoingDto(user.getUsername(), user.getPosts(), user.getAlbums());
-        return new UserOutGoingDto(user.getUsername());
+        return new UserOutGoingDto(user.getUsername(), user.getPosts(), user.getAlbums());
     }
 
     @Override

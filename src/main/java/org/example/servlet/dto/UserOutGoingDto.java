@@ -16,9 +16,9 @@ public class UserOutGoingDto {
         this.albums = albums;
     }
 
-    public UserOutGoingDto(String username) {
-        this.username = username;
-    }
+//    public UserOutGoingDto(String username) {
+//        this.username = username;
+//    }
 
     public String getUsername() {
         return username;

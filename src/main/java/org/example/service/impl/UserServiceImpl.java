@@ -37,28 +37,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserOutGoingDto save(UserIncomingDto userIncomingDto) {
         User user = userRepository.save(userDtoMapper.map(userIncomingDto));
-        userRepository.save(user);
         return userDtoMapper.map(user);
     }
 
     @Override
     public void update(UserIncomingDto userIncomingDto) {
-//        if (userIncomingDto == null) {
-//            return Optional.empty();
-//        }
-//        Optional<UserOutGoingDto> userOutGoingDto = userService.findById(userIncomingDto.getId());
-//        if (userOutGoingDto.isPresent()) {
-//            return userOutGoingDto;
-//        }
-//        User user = new User();
-//        user.setId(userIncomingDto.getId());
-//        user.setUsername(userIncomingDto.getUsername());
-//        return Optional.of(userDtoMapper.map(user));
+        User user = userDtoMapper.map(userIncomingDto);
+        userRepository.update(user);
     }
 
     @Override
     public boolean deleteById(long id) {
-        return false;
+        return userRepository.deleteById(id);
     }
 
     @Override
@@ -67,32 +57,10 @@ public class UserServiceImpl implements UserService {
         return userDtoMapper.map(user);
     }
 
-
     @Override
     public List<UserOutGoingDto> findAll() {
-        String SQL_QUERY = "select * from users";
-        List<User> employees = null;
-        try (Connection con = HikariConnectionManager.getInstance().getConnection();
-             PreparedStatement pst = con.prepareStatement(SQL_QUERY);
-             ResultSet rs = pst.executeQuery();) {
-            employees = new ArrayList<>();
-            User user;
-            while (rs.next()) {
-                user = new User();
-                user.setId(rs.getInt("id"));
-                user.setUsername(rs.getString("username"));
+        List<User> users = userRepository.findAll();
+        return userDtoMapper.map(users);
 
-                employees.add(user);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return userDtoMapper.map(employees);
-
-    }
-
-    @Override
-    public boolean existById(long id) {
-        return false;
     }
 }

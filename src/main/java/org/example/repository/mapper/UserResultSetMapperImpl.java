@@ -14,11 +14,10 @@ public class UserResultSetMapperImpl implements UserResultSetMapper {
             long id = resultSet.getLong("id");
             String username = resultSet.getString("username");
             // Здесь можно извлечь остальные поля из resultSet и использовать их для создания объекта User
-            return new User(id, username); // Предположим, что User имеет конструктор с полями id и username
+            return new User(id, username);
         } catch (SQLException e) {
-            // Обработка ошибки, например, выброс исключения или возврат null
-            e.printStackTrace(); // Выводим стек вызовов для отладки
-            return null; // Возвращаем null в случае ошибки
+            e.printStackTrace();
+            return null;
         }
     }
 }
