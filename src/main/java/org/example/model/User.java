@@ -53,6 +53,9 @@ public class User {
     }
 
     public List<Post> getPosts() {
+//        if(posts == null){
+//            this.posts = postRepository.
+//        }
         return posts;
     }
 

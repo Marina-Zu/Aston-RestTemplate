@@ -13,16 +13,15 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
-    private static UserDtoMapper userDtoMapper = UserDtoMapperImpl.getInstance();
+    private static final UserDtoMapper userDtoMapper = UserDtoMapperImpl.getInstance();
     private static UserService instance;
 
-    private UserServiceImpl(UserDtoMapper userDtoMapper) {
-        this.userDtoMapper = userDtoMapper;
+    private UserServiceImpl() {
     }
 
     public static synchronized UserService getInstance() {
         if (instance == null) {
-            instance = new UserServiceImpl(userDtoMapper);
+            instance = new UserServiceImpl();
         }
         return instance;
     }

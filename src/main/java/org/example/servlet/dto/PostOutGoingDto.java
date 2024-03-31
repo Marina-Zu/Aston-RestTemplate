@@ -1,43 +1,19 @@
-package org.example.model;
+package org.example.servlet.dto;
 
-import jakarta.persistence.*;
+import org.example.model.Album;
+import org.example.model.User;
 
 import java.util.List;
 
-@Entity
-@Table(name = "post")
-public class Post {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(name = "content", nullable = false, length = 4096)
+public class PostOutGoingDto {
     private String content;
-
-    @ManyToOne
-    @JoinColumn(name = "author_id")
     private User author;
-
-    @ManyToMany(mappedBy = "posts")
     private List<Album> albums;
 
-    public Post(){
-    }
-
-    public Post(long id, String content, User author, List<Album> albums) {
-        this.id = id;
+    public PostOutGoingDto(String content, User author, List<Album> albums) {
         this.content = content;
         this.author = author;
         this.albums = albums;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getContent() {
@@ -64,4 +40,3 @@ public class Post {
         this.albums = albums;
     }
 }
-

@@ -27,4 +27,16 @@ public class UserOutGoingDto {
     public List<Album> getAlbums() {
         return albums;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void setAlbums(List<Album> albums) {
+        this.albums = albums;
+    }
 }
