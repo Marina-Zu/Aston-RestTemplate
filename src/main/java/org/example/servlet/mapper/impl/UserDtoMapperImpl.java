@@ -1,8 +1,6 @@
 package org.example.servlet.mapper.impl;
 
 import org.example.model.User;
-import org.example.service.UserService;
-import org.example.service.impl.UserServiceImpl;
 import org.example.servlet.dto.UserIncomingDto;
 import org.example.servlet.dto.UserOutGoingDto;
 import org.example.servlet.mapper.UserDtoMapper;
@@ -10,8 +8,6 @@ import org.example.servlet.mapper.UserDtoMapper;
 import java.util.List;
 
 public class UserDtoMapperImpl implements UserDtoMapper {
-    private UserService userService = UserServiceImpl.getInstance();
-
     private static UserDtoMapper instance;
 
     private UserDtoMapperImpl() {

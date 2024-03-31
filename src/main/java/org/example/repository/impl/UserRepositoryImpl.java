@@ -2,17 +2,13 @@ package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
 import org.example.db.HikariConnectionManager;
-import org.example.model.User;
 import org.example.exeption.RepositoryException;
+import org.example.model.User;
 import org.example.repository.UserRepository;
-import org.example.repository.mapper.UserResultSetMapper;
-import org.example.repository.mapper.UserResultSetMapperImpl;
-import org.mapstruct.control.MappingControl;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 public class UserRepositoryImpl implements UserRepository {
@@ -36,13 +32,6 @@ public class UserRepositoryImpl implements UserRepository {
             """;
     private static final String FIND_ALL_SQL = """
             SELECT * FROM users;
-            """;
-    private static final String EXIST_BY_ID_SQL = """
-                SELECT exists (
-                SELECT 1
-                    FROM users
-                        WHERE user_id = ?
-                        LIMIT 1);
             """;
 
     private static UserRepository instance;
@@ -103,11 +92,9 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findById(Long id) {
         User user = new User();
-        try {
-            Connection connection = HikariConnectionManager.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL);
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 user = createUser(resultSet);
@@ -120,7 +107,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        List<User> users = null;
+        List<User> users;
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
              ResultSet resultSet = preparedStatement.executeQuery()) {

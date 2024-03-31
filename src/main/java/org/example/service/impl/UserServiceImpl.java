@@ -1,6 +1,5 @@
 package org.example.service.impl;
 
-import org.example.db.HikariConnectionManager;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 import org.example.repository.impl.UserRepositoryImpl;
@@ -10,13 +9,7 @@ import org.example.servlet.dto.UserOutGoingDto;
 import org.example.servlet.mapper.UserDtoMapper;
 import org.example.servlet.mapper.impl.UserDtoMapperImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
