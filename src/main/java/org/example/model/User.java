@@ -1,12 +1,18 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.example.repository.PostRepository;
+import org.example.repository.impl.PostRepositoryImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
+
+    private static final PostRepository postRepository = PostRepositoryImpl.getInstance();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +22,7 @@ public class User {
     private String username;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private List<Post> posts;
 
     @ManyToMany(mappedBy = "albums")
@@ -35,6 +42,12 @@ public class User {
         this.id = id;
         this.username = username;
     }
+    public void addPost(Post post) {
+        if (posts == null) {
+            posts = new ArrayList<>();
+        }
+        posts.add(post);
+    }
 
     public long getId() {
         return id;
@@ -53,9 +66,9 @@ public class User {
     }
 
     public List<Post> getPosts() {
-//        if(posts == null){
-//            this.posts = postRepository.
-//        }
+        if(posts == null){
+            this.posts = postRepository.findAllByAuthorId(this.id);
+        }
         return posts;
     }
 

@@ -7,7 +7,6 @@ import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
-import org.example.servlet.dto.PostOutGoingDto;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,6 +34,12 @@ public class PostRepositoryImpl implements PostRepository {
     private static final String FIND_ALL_SQL = """
             SELECT * FROM post;
             """;
+
+    public static final String FIND_ALL_POSTS_BY_AUTHOR_ID_SQL = """
+        SELECT *
+        FROM post
+        WHERE author_id = ?;
+        """;
 
     private static PostRepository instance;
     private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
@@ -66,6 +71,9 @@ public class PostRepositoryImpl implements PostRepository {
                     throw new RepositoryException("Failed to save post, no ID obtained.");
                 }
             }
+            User author = post.getAuthor();
+            author.addPost(post);
+            userRepository.update(author);
 
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
@@ -132,6 +140,28 @@ public class PostRepositoryImpl implements PostRepository {
         return posts;
     }
 
+    @Override
+    public List<Post> findAllByAuthorId(Long id) {
+        List<Post> posts = new ArrayList<>();
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_POSTS_BY_AUTHOR_ID_SQL)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Post post = new Post();
+                    post.setId(resultSet.getLong("id"));
+                    post.setContent(resultSet.getString("content"));
+                    User author = userRepository.findById(id);
+                    post.setAuthor(author);
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException(e.getMessage());
+        }
+        return posts;
+    }
+
     private Post createPost(ResultSet resultSet) throws SQLException {
         Post post = new Post();
         post.setId(resultSet.getLong("id"));
@@ -141,6 +171,4 @@ public class PostRepositoryImpl implements PostRepository {
         post.setAuthor(user);
         return post;
     }
-
-
 }

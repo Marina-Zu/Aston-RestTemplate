@@ -1,4 +1,4 @@
-package org.example.servlet.mapper;
+package org.example.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;

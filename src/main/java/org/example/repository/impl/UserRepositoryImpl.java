@@ -121,7 +121,6 @@ public class UserRepositoryImpl implements UserRepository {
         return users;
     }
 
-
     private User createUser(ResultSet resultSet) throws SQLException {
         User user = new User();
         user.setId(resultSet.getLong("id"));
