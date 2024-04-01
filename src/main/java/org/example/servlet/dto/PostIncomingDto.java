@@ -7,12 +7,6 @@ public class PostIncomingDto {
     private String content;
     private long author;
 
-//    public PostIncomingDto(String content, long author) {
-//        this.content = content;
-//        this.author = author;
-//    }
-   // @JsonCreator
-
 
     public PostIncomingDto(long id, String content) {
         this.id = id;
@@ -27,10 +21,6 @@ public class PostIncomingDto {
     public long getId() {
         return id;
     }
-
-//    public void setId(long id) {
-//        this.id = id;
-//    }
 
     public String getContent() {
         return content;

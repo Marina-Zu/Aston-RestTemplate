@@ -4,7 +4,6 @@ import org.example.model.Post;
 import org.example.repository.PostRepository;
 import org.example.repository.impl.PostRepositoryImpl;
 import org.example.service.PostService;
-import org.example.service.UserService;
 import org.example.servlet.dto.PostIncomingDto;
 import org.example.servlet.dto.PostOutGoingDto;
 import org.example.servlet.mapper.PostDtoMapper;
@@ -16,9 +15,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository = PostRepositoryImpl.getInstance();
     private static PostDtoMapper postDtoMapper = PostDtoMapperImpl.getInstance();
     private static PostService instance;
-
-    public PostServiceImpl() {
-    }
 
     public static synchronized PostService getInstance() {
         if (instance == null) {
@@ -54,10 +50,5 @@ public class PostServiceImpl implements PostService {
     public List<PostOutGoingDto> findAll() {
         List<Post> posts = postRepository.findAll();
         return postDtoMapper.map(posts);
-    }
-
-    @Override
-    public List<PostOutGoingDto> findAllPostsByAuthorId() {
-        return null;
     }
 }

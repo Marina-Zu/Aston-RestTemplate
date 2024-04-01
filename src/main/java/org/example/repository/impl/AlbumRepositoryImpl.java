@@ -3,91 +3,100 @@ package org.example.repository.impl;
 import org.example.db.ConnectionManager;
 import org.example.db.HikariConnectionManager;
 import org.example.exeption.RepositoryException;
-import org.example.model.Post;
-import org.example.model.User;
-import org.example.repository.PostRepository;
+import org.example.model.Album;
+import org.example.repository.AlbumRepository;
 import org.example.repository.UserRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostRepositoryImpl implements PostRepository {
+public class AlbumRepositoryImpl implements AlbumRepository {
     private static final String SAVE_SQL = """
-            INSERT INTO post (content, author_id)
-            VALUES (?, ?);
+            INSERT INTO album (title, description, author_id)
+            VALUES (?, ?, ?);
             """;
     private static final String UPDATE_SQL = """
-            UPDATE post
-            SET content = ?
+            UPDATE album
+            SET title = ?, description = ?
             WHERE id = ?;
             """;
     private static final String DELETE_SQL = """
-            DELETE FROM post
+            DELETE FROM album
             WHERE id = ?;
             """;
     private static final String FIND_BY_ID_SQL = """
-            SELECT * FROM post
+            SELECT * FROM album
             WHERE id = ?
             LIMIT 1;
             """;
     private static final String FIND_ALL_SQL = """
-            SELECT * FROM post;
+            SELECT * FROM album;
+            """;
+    private static final String FIND_ALL_BY_AUTHOR_ID_SQL = """
+            SELECT * FROM album
+            WHERE author_id = ?;
             """;
 
-    public static final String FIND_ALL_POSTS_BY_AUTHOR_ID_SQL = """
+    public static final String FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL = """
         SELECT *
-        FROM post
+        FROM album
         WHERE author_id = ?;
         """;
 
-    private static PostRepository instance;
-   private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
+    public static final String ADD_POST_TO_ALBUM_SQL = """
+        INSERT INTO post_album (album_id, post_id)
+        VALUES (?, ?);
+        """;
+
+    private static AlbumRepositoryImpl instance;
+
+    private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
 
-    public static synchronized PostRepository getInstance() {
+    public static synchronized AlbumRepositoryImpl getInstance() {
         if (instance == null) {
-            instance = new PostRepositoryImpl();
+            instance = new AlbumRepositoryImpl();
         }
         return instance;
     }
+
     @Override
-    public Post save(Post post) {
+    public Album save(Album album) {
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, post.getContent());
-            preparedStatement.setLong(2, post.getAuthor().getId());
+            preparedStatement.setString(1, album.getTitle());
+            preparedStatement.setString(2, album.getDescription());
+            preparedStatement.setLong(3, album.getAuthorId());
 
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
-                throw new RepositoryException("Failed to save post, no rows affected.");
+                throw new RepositoryException("Failed to save album, no rows affected.");
             }
 
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    post.setId(generatedKeys.getLong(1));
+                    album.setId(generatedKeys.getLong(1));
                 } else {
-                    throw new RepositoryException("Failed to save post, no ID obtained.");
+                    throw new RepositoryException("Failed to save album, no ID obtained.");
                 }
             }
-            User author = post.getAuthor();
-            author.addPost(post);
-            userRepository.update(author);
 
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
-        return post;
+        return album;
     }
 
     @Override
-    public void update(Post post) {
+    public void update(Album album) {
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
 
-            preparedStatement.setString(1, post.getContent());
-            preparedStatement.setLong(2, post.getId());
+            preparedStatement.setString(1, album.getTitle());
+            preparedStatement.setString(2, album.getDescription());
+            preparedStatement.setLong(3, album.getId());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -109,66 +118,76 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post findById(Long id) {
-        Post post = new Post();
+    public Album findById(Long id) {
+        Album album = new Album();
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                post = createPost(resultSet);
+                album.setId(resultSet.getLong("id"));
+                album.setTitle(resultSet.getString("title"));
+                album.setDescription(resultSet.getString("description"));
+                album.setAuthorId(resultSet.getLong("author_id"));
             }
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
-        return post;
+        return album;
     }
 
     @Override
-    public List<Post> findAll() {
-        List<Post> posts;
+    public List<Album> findAll() {
+        List<Album> albums;
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
-            posts = new ArrayList<>();
+            albums = new ArrayList<>();
             while (resultSet.next()) {
-                posts.add(createPost(resultSet));
+                Album album = new Album();
+                album.setId(resultSet.getLong("id"));
+                album.setTitle(resultSet.getString("title"));
+                album.setDescription(resultSet.getString("description"));
+                album.setAuthorId(resultSet.getLong("author_id"));
+                albums.add(album);
             }
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
-        return posts;
+        return albums;
     }
 
     @Override
-    public List<Post> findAllByAuthorId(Long id) {
-        List<Post> posts = new ArrayList<>();
+    public List<Album> findAllByAuthorId(Long id) {
+        List<Album> albums = new ArrayList<>();
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_POSTS_BY_AUTHOR_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL)) {
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    Post post = new Post();
-                    post.setId(resultSet.getLong("id"));
-                    post.setContent(resultSet.getString("content"));
-                    User author = userRepository.findById(id);
-                    post.setAuthor(author);
-                    posts.add(post);
+                    Album album = new Album();
+                    album.setId(resultSet.getLong("id"));
+                    album.setTitle(resultSet.getString("title"));
+                    album.setDescription(resultSet.getString("description"));
+                    album.setAuthorId(id);
+                    albums.add(album);
                 }
             }
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
-        return posts;
+        return albums;
     }
 
-    private Post createPost(ResultSet resultSet) throws SQLException {
-        Post post = new Post();
-        post.setId(resultSet.getLong("id"));
-        post.setContent(resultSet.getString("content"));
-        long authorId = resultSet.getLong("author_id");
-        User user = userRepository.findById(authorId);
-        post.setAuthor(user);
-        return post;
+    @Override
+    public void addPost(long albumId, long postId) {
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(ADD_POST_TO_ALBUM_SQL)) {
+            preparedStatement.setLong(1, albumId);
+            preparedStatement.setLong(2, postId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RepositoryException(e.getMessage());
+        }
     }
 }

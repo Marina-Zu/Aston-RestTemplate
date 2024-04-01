@@ -1,47 +1,20 @@
-package org.example.model;
+package org.example.servlet.dto;
 
-import jakarta.persistence.*;
+import org.example.model.Post;
 
 import java.util.List;
 
-@Entity
-@Table(name = "album")
-public class Album {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(name = "title", nullable = false, length = 256)
+public class AlbumOutGoingDto {
     private String title;
-
-    @Column(name = "description", length = 4096)
     private String description;
-
-    @Column(name = "author_id", nullable = false)
     private long authorId;
-
-    @ManyToMany
-    @JoinTable(name = "post_album", joinColumns = @JoinColumn(name = "album_id"), inverseJoinColumns = @JoinColumn(name = "post_id"))
     private List<Post> posts;
 
-    public Album() {
-    }
-
-    public Album(long id, String title, String description, long authorId, List<Post> posts) {
-        this.id = id;
+    public AlbumOutGoingDto(String title, String description, long authorId, List<Post> posts) {
         this.title = title;
         this.description = description;
         this.authorId = authorId;
         this.posts = posts;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getTitle() {

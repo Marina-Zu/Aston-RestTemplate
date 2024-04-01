@@ -64,7 +64,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(User user) {
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
 
             preparedStatement.setString(1, user.getUsername());

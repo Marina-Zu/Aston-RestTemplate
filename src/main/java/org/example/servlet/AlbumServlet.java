@@ -5,8 +5,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.PostService;
-import org.example.service.impl.PostServiceImpl;
+import org.example.service.AlbumService;
+import org.example.service.impl.AlbumServiceImpl;
+import org.example.servlet.dto.AlbumIncomingDto;
+import org.example.servlet.dto.AlbumOutGoingDto;
 import org.example.servlet.dto.PostIncomingDto;
 import org.example.servlet.dto.PostOutGoingDto;
 
@@ -16,12 +18,12 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
 
-@WebServlet(urlPatterns = {"/post/*"})
-public class PostServlet extends HttpServlet {
-    private final transient PostService postService = PostServiceImpl.getInstance();
+@WebServlet(urlPatterns = {"/album/*"})
+public class AlbumServlet extends HttpServlet {
+    private final transient AlbumService albumService = AlbumServiceImpl.getInstance();
     private final ObjectMapper objectMapper;
 
-    public PostServlet() {
+    public AlbumServlet() {
         this.objectMapper = new ObjectMapper();
     }
 
@@ -48,14 +50,14 @@ public class PostServlet extends HttpServlet {
         try {
             String[] pathPart = req.getPathInfo().split("/");
             if ("all".equals(pathPart[1])) {
-                List<PostOutGoingDto> postDtoList = postService.findAll();
+                List<AlbumOutGoingDto> albumDtoList = albumService.findAll();
                 resp.setStatus(HttpServletResponse.SC_OK);
-                responseAnswer = objectMapper.writeValueAsString(postDtoList);
+                responseAnswer = objectMapper.writeValueAsString(albumDtoList);
             } else {
                 long authorId = Long.parseLong(pathPart[1]);
-                PostOutGoingDto postDto = postService.findById(authorId);
+                AlbumOutGoingDto albumDto = albumService.findById(authorId);
                 resp.setStatus(HttpServletResponse.SC_OK);
-                responseAnswer = objectMapper.writeValueAsString(postDto);
+                responseAnswer = objectMapper.writeValueAsString(albumDto);
             }
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -72,10 +74,10 @@ public class PostServlet extends HttpServlet {
         String responseAnswer = "";
         try {
             String[] pathPart = req.getPathInfo().split("/");
-            long postId = Long.parseLong(pathPart[1]);
+            long albumId = Long.parseLong(pathPart[1]);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            postService.deleteById(postId);
-            responseAnswer = "Post with id " + postId + " deleted";
+            albumService.deleteById(albumId);
+            responseAnswer = "Album with id " + albumId + " deleted";
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             responseAnswer = "Bad request.";
@@ -91,14 +93,14 @@ public class PostServlet extends HttpServlet {
         String json = getJson(req);
 
         String responseAnswer = "";
-        Optional<PostIncomingDto> postResponse;
+        Optional<AlbumIncomingDto> albumResponse;
         try {
-            postResponse = Optional.ofNullable(objectMapper.readValue(json, PostIncomingDto.class));
-            PostIncomingDto post = postResponse.orElseThrow(IllegalArgumentException::new);
-            responseAnswer = objectMapper.writeValueAsString(postService.save(post));
+            albumResponse = Optional.ofNullable(objectMapper.readValue(json, AlbumIncomingDto.class));
+            AlbumIncomingDto album = albumResponse.orElseThrow(IllegalArgumentException::new);
+            responseAnswer = objectMapper.writeValueAsString(albumService.save(album));
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            responseAnswer = "Incorrect post Object.";
+            responseAnswer = "Incorrect album Object.";
         }
         PrintWriter printWriter = resp.getWriter();
         printWriter.write(responseAnswer);
@@ -111,19 +113,17 @@ public class PostServlet extends HttpServlet {
         String json = getJson(req);
 
         String responseAnswer = "";
-        PostIncomingDto postResponse;
+        AlbumIncomingDto albumResponse;
         try {
-            postResponse = objectMapper.readValue(json, PostIncomingDto.class);
-            postService.update(postResponse);
-            responseAnswer = "Post update";
+            albumResponse = objectMapper.readValue(json, AlbumIncomingDto.class);
+            albumService.update(albumResponse);
+            responseAnswer = "Album update";
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            responseAnswer = "Incorrect post Object.";
+            responseAnswer = "Incorrect album Object.";
         }
         PrintWriter printWriter = resp.getWriter();
         printWriter.write(responseAnswer);
         printWriter.flush();
     }
-
-
 }

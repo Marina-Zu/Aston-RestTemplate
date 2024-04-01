@@ -15,5 +15,4 @@ public interface PostService {
     PostOutGoingDto findById(long id);
 
     List<PostOutGoingDto> findAll();
-    List<PostOutGoingDto> findAllPostsByAuthorId();
 }
