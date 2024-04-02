@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.exeption.NotFoundException;
 import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
 
@@ -16,5 +17,5 @@ public interface AlbumService {
 
     List<AlbumOutGoingDto> findAll();
 
-    void addPost(long albumId, long postId);
+    void addPost(long albumId, long postId) throws NotFoundException;
 }

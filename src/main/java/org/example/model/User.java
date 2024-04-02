@@ -2,7 +2,9 @@ package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.example.repository.AlbumRepository;
 import org.example.repository.PostRepository;
+import org.example.repository.impl.AlbumRepositoryImpl;
 import org.example.repository.impl.PostRepositoryImpl;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
 public class User {
 
     private static final PostRepository postRepository = PostRepositoryImpl.getInstance();
+private static final AlbumRepository albumRepository = AlbumRepositoryImpl.getInstance();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +52,13 @@ public class User {
         posts.add(post);
     }
 
+    public void addAlbum(Album album) {
+        if (albums == null) {
+            albums = new ArrayList<>();
+        }
+        albums.add(album);
+    }
+
     public long getId() {
         return id;
     }
@@ -72,13 +82,20 @@ public class User {
         return posts;
     }
 
+    public List<Album> getAlbums() {
+        if(albums == null){
+            this.albums = albumRepository.findAllByAuthorId(this.id);
+        }
+        return albums;
+    }
+
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 
-    public List<Album> getAlbums() {
-        return albums;
-    }
+  //  public List<Album> getAlbums() {
+//        return albums;
+//    }
 
     public void setAlbums(List<Album> albums) {
         this.albums = albums;

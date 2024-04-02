@@ -121,6 +121,11 @@ public class UserRepositoryImpl implements UserRepository {
         return users;
     }
 
+    @Override
+    public boolean existsById(Long id) {
+        return findById(id) != null;
+    }
+
     private User createUser(ResultSet resultSet) throws SQLException {
         User user = new User();
         user.setId(resultSet.getLong("id"));

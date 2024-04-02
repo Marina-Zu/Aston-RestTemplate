@@ -204,3 +204,7 @@ c
 3src/main/java/org/example/servlet/AlbumServlet.java,8\5\85aab7d5d4d422fc70caac397d989b0bcf14ba40
 u
 Esrc/main/java/org/example/servlet/mapper/impl/AlbumDtoMapperImpl.java,d\2\d20605d3bc25cc7894f88b8c8101a77fe186cfe9
+m
+=src/main/java/org/example/repository/PostAlbumRepository.java,1\2\123621f15b8390a6dbf2238e36d6caa9cdf17be4
+v
+Fsrc/main/java/org/example/repository/impl/PostAlbumRepositoryImpl.java,4\4\44bd41930d8069624bc5de50f80f9d508954a586

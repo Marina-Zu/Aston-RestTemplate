@@ -1,8 +1,12 @@
 package org.example.service.impl;
 
+import org.example.exeption.NotFoundException;
 import org.example.model.Album;
+import org.example.model.Post;
 import org.example.repository.AlbumRepository;
+import org.example.repository.PostRepository;
 import org.example.repository.impl.AlbumRepositoryImpl;
+import org.example.repository.impl.PostRepositoryImpl;
 import org.example.service.AlbumService;
 import org.example.service.PostService;
 import org.example.servlet.dto.AlbumIncomingDto;
@@ -15,6 +19,7 @@ import java.util.List;
 public class AlbumServiceImpl implements AlbumService {
     private final AlbumRepository albumRepository = AlbumRepositoryImpl.getInstance();
     private static AlbumDtoMapper albumDtoMapper = AlbumDtoMapperImpl.getInstance();
+    private static PostRepository postRepository = PostRepositoryImpl.getInstance();
     private static AlbumService instance;
     public static synchronized AlbumService getInstance() {
         if (instance == null) {
@@ -52,7 +57,29 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public void addPost(long albumId, long postId) {
-        albumRepository.addPost(albumId, postId);
+    public void addPost(long albumId, long postId) throws NotFoundException {
+        checkExistAlbum(albumId);
+        checkExistPost(postId);
+
+        Album album = albumRepository.findById(albumId);
+        if (album != null) {
+            album.addPost(postRepository.findById(postId));
+            albumRepository.update(album);
+        } else {
+            throw new NotFoundException("Album not found.");
+        }
     }
+
+    private void checkExistPost(long postId) throws NotFoundException {
+        if (!postRepository.existsById(postId)) {
+            throw new NotFoundException("Post not found.");
+        }
+    }
+
+    private void checkExistAlbum(long albumId) throws NotFoundException {
+        if (!albumRepository.existsById(albumId)) {
+            throw new NotFoundException("Album not found.");
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ package org.example.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,6 +35,12 @@ public class Album {
         this.description = description;
         this.authorId = authorId;
         this.posts = posts;
+    }
+
+    public void addPost(Post post) {
+        if(posts == null)
+            posts = new ArrayList<>();
+        posts.add(post);
     }
 
     public long getId() {

@@ -4,7 +4,10 @@ import org.example.db.ConnectionManager;
 import org.example.db.HikariConnectionManager;
 import org.example.exeption.RepositoryException;
 import org.example.model.Album;
+import org.example.model.Post;
 import org.example.repository.AlbumRepository;
+import org.example.repository.PostAlbumRepository;
+import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
 
 import java.sql.*;
@@ -33,26 +36,26 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     private static final String FIND_ALL_SQL = """
             SELECT * FROM album;
             """;
-    private static final String FIND_ALL_BY_AUTHOR_ID_SQL = """
-            SELECT * FROM album
+
+    public static final String FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL = """
+            SELECT *
+            FROM album
             WHERE author_id = ?;
             """;
 
-    public static final String FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL = """
-        SELECT *
-        FROM album
-        WHERE author_id = ?;
-        """;
-
     public static final String ADD_POST_TO_ALBUM_SQL = """
-        INSERT INTO post_album (album_id, post_id)
-        VALUES (?, ?);
-        """;
-
+            INSERT INTO post_album (album_id, post_id)
+            VALUES (?, ?);
+            """;
+    public static final String DELETE_PREVIOUS_POSTS_SQL = "DELETE FROM post_album WHERE album_id = ?";
+    public static final String ADD_NEW_POSTS_SQL = "INSERT INTO post_album (album_id, post_id) VALUES (?, ?)";
     private static AlbumRepositoryImpl instance;
 
     private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
+
+    private final PostRepository postRepository = PostRepositoryImpl.getInstance();
+    private final PostAlbumRepository postAlbumRepository = PostAlbumRepositoryImpl.getInstance();
 
     public static synchronized AlbumRepositoryImpl getInstance() {
         if (instance == null) {
@@ -91,13 +94,21 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     @Override
     public void update(Album album) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+        try (Connection connection = HikariConnectionManager.getInstance().getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+                preparedStatement.setString(1, album.getTitle());
+                preparedStatement.setString(2, album.getDescription());
+                preparedStatement.setLong(3, album.getId());
+                preparedStatement.executeUpdate();
+            }
 
-            preparedStatement.setString(1, album.getTitle());
-            preparedStatement.setString(2, album.getDescription());
-            preparedStatement.setLong(3, album.getId());
-            preparedStatement.executeUpdate();
+            try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_NEW_POSTS_SQL)) {
+                for (Post post : album.getPosts()) {
+                    preparedStatement.setLong(1, album.getId());
+                    preparedStatement.setLong(2, post.getId());
+                    preparedStatement.executeUpdate();
+                }
+            }
 
         } catch (SQLException e) {
             throw new RepositoryException(e);
@@ -111,6 +122,10 @@ public class AlbumRepositoryImpl implements AlbumRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
             deleteResult = preparedStatement.executeUpdate() > 0;
+//            try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_PREVIOUS_POSTS_SQL)) {
+//                preparedStatement.setLong(1, album.getId());
+//                preparedStatement.executeUpdate();
+//            }
         } catch (SQLException e) {
             throw new RepositoryException(e);
         }
@@ -130,6 +145,17 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 album.setDescription(resultSet.getString("description"));
                 album.setAuthorId(resultSet.getLong("author_id"));
             }
+
+            List<Long> postIds = postAlbumRepository.findAllPostIdsByAlbumId(id);
+
+            List<Post> posts = new ArrayList<>();
+            for (Long postId : postIds) {
+                Post post = postRepository.findById(postId);
+                posts.add(post);
+            }
+
+            album.setPosts(posts);
+
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
@@ -155,6 +181,11 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             throw new RepositoryException(e.getMessage());
         }
         return albums;
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return findById(id) != null;
     }
 
     @Override

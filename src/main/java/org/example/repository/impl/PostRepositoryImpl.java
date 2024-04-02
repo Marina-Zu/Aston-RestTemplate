@@ -141,6 +141,11 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return findById(id) != null;
+    }
+
+    @Override
     public List<Post> findAllByAuthorId(Long id) {
         List<Post> posts = new ArrayList<>();
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();
