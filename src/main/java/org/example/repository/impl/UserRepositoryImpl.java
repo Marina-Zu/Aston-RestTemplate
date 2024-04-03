@@ -2,7 +2,7 @@ package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
 import org.example.db.HikariConnectionManager;
-import org.example.exeption.RepositoryException;
+import org.example.exception.RepositoryException;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 

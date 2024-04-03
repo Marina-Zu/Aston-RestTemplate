@@ -2,7 +2,7 @@ package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
 import org.example.db.HikariConnectionManager;
-import org.example.exeption.RepositoryException;
+import org.example.exception.RepositoryException;
 import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.PostRepository;
@@ -36,13 +36,13 @@ public class PostRepositoryImpl implements PostRepository {
             """;
 
     public static final String FIND_ALL_POSTS_BY_AUTHOR_ID_SQL = """
-        SELECT *
-        FROM post
-        WHERE author_id = ?;
-        """;
+            SELECT *
+            FROM post
+            WHERE author_id = ?;
+            """;
 
     private static PostRepository instance;
-   private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
+    private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     public static synchronized PostRepository getInstance() {
@@ -51,6 +51,7 @@ public class PostRepositoryImpl implements PostRepository {
         }
         return instance;
     }
+
     @Override
     public Post save(Post post) {
         try (Connection connection = HikariConnectionManager.getInstance().getConnection();

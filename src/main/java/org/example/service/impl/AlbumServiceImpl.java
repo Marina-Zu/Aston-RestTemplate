@@ -1,14 +1,12 @@
 package org.example.service.impl;
 
-import org.example.exeption.NotFoundException;
+import org.example.exception.NotFoundException;
 import org.example.model.Album;
-import org.example.model.Post;
 import org.example.repository.AlbumRepository;
 import org.example.repository.PostRepository;
 import org.example.repository.impl.AlbumRepositoryImpl;
 import org.example.repository.impl.PostRepositoryImpl;
 import org.example.service.AlbumService;
-import org.example.service.PostService;
 import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
 import org.example.servlet.mapper.AlbumDtoMapper;
@@ -21,16 +19,18 @@ public class AlbumServiceImpl implements AlbumService {
     private static AlbumDtoMapper albumDtoMapper = AlbumDtoMapperImpl.getInstance();
     private static PostRepository postRepository = PostRepositoryImpl.getInstance();
     private static AlbumService instance;
+
     public static synchronized AlbumService getInstance() {
         if (instance == null) {
             instance = new AlbumServiceImpl();
         }
         return instance;
     }
+
     @Override
     public AlbumOutGoingDto save(AlbumIncomingDto albumIncomingDto) {
-       Album album = albumRepository.save(albumDtoMapper.map(albumIncomingDto));
-       return albumDtoMapper.map(album);
+        Album album = albumRepository.save(albumDtoMapper.map(albumIncomingDto));
+        return albumDtoMapper.map(album);
     }
 
     @Override

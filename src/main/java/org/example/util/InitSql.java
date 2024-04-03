@@ -1,7 +1,7 @@
 package org.example.util;
 
 import org.example.db.ConnectionManager;
-import org.example.exeption.DataValidationException;
+import org.example.exception.DataValidationException;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;

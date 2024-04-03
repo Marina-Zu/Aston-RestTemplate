@@ -18,15 +18,16 @@ public class PostDtoMapperImpl implements PostDtoMapper {
 
     private static PostDtoMapper instance;
 
-    public static synchronized PostDtoMapper getInstance(){
-        if(instance == null){
+    public static synchronized PostDtoMapper getInstance() {
+        if (instance == null) {
             instance = new PostDtoMapperImpl();
         }
         return instance;
     }
+
     @Override
     public Post map(PostIncomingDto postIncomingDto) {
-        if(postIncomingDto == null){
+        if (postIncomingDto == null) {
             return null;
         }
         Post post = new Post();
@@ -39,7 +40,7 @@ public class PostDtoMapperImpl implements PostDtoMapper {
 
     @Override
     public PostOutGoingDto map(Post post) {
-        if(post == null){
+        if (post == null) {
             return null;
         }
         return new PostOutGoingDto(post.getContent(), post.getAuthor(), post.getAlbums());

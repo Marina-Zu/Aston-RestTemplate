@@ -1,7 +1,7 @@
 package org.example.repository.impl;
 
 import org.example.db.HikariConnectionManager;
-import org.example.exeption.RepositoryException;
+import org.example.exception.RepositoryException;
 import org.example.repository.PostAlbumRepository;
 
 import java.sql.Connection;

@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.exeption.NotFoundException;
+import org.example.exception.NotFoundException;
 import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
 

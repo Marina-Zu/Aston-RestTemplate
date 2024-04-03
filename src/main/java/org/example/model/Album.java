@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "album")
@@ -38,7 +39,7 @@ public class Album {
     }
 
     public void addPost(Post post) {
-        if(posts == null)
+        if (posts == null)
             posts = new ArrayList<>();
         posts.add(post);
     }
@@ -81,5 +82,18 @@ public class Album {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Album album = (Album) o;
+        return id == album.id && authorId == album.authorId && Objects.equals(title, album.title) && Objects.equals(description, album.description) && Objects.equals(posts, album.posts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, authorId, posts);
     }
 }

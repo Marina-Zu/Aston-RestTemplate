@@ -5,13 +5,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.exeption.NotFoundException;
 import org.example.service.AlbumService;
 import org.example.service.impl.AlbumServiceImpl;
 import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
-import org.example.servlet.dto.PostIncomingDto;
-import org.example.servlet.dto.PostOutGoingDto;
 
 import java.io.BufferedReader;
 import java.io.IOException;

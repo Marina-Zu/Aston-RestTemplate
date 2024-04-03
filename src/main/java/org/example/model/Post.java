@@ -3,6 +3,7 @@ package org.example.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "post")
@@ -22,7 +23,7 @@ public class Post {
     @ManyToMany(mappedBy = "posts")
     private List<Album> albums;
 
-    public Post(){
+    public Post() {
     }
 
     public Post(long id, String content, User author, List<Album> albums) {
@@ -62,6 +63,19 @@ public class Post {
 
     public void setAlbums(List<Album> albums) {
         this.albums = albums;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id == post.id && Objects.equals(content, post.content) && Objects.equals(author, post.author) && Objects.equals(albums, post.albums);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, author, albums);
     }
 }
 

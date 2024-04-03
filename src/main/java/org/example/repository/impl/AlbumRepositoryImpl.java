@@ -2,7 +2,7 @@ package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
 import org.example.db.HikariConnectionManager;
-import org.example.exeption.RepositoryException;
+import org.example.exception.RepositoryException;
 import org.example.model.Album;
 import org.example.model.Post;
 import org.example.repository.AlbumRepository;
@@ -47,8 +47,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             INSERT INTO post_album (album_id, post_id)
             VALUES (?, ?);
             """;
-    public static final String DELETE_PREVIOUS_POSTS_SQL = "DELETE FROM post_album WHERE album_id = ?";
-    public static final String ADD_NEW_POSTS_SQL = "INSERT INTO post_album (album_id, post_id) VALUES (?, ?)";
+
     private static AlbumRepositoryImpl instance;
 
     private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
@@ -102,7 +101,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 preparedStatement.executeUpdate();
             }
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_NEW_POSTS_SQL)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_POST_TO_ALBUM_SQL)) {
                 for (Post post : album.getPosts()) {
                     preparedStatement.setLong(1, album.getId());
                     preparedStatement.setLong(2, post.getId());
@@ -122,10 +121,6 @@ public class AlbumRepositoryImpl implements AlbumRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
             deleteResult = preparedStatement.executeUpdate() > 0;
-//            try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_PREVIOUS_POSTS_SQL)) {
-//                preparedStatement.setLong(1, album.getId());
-//                preparedStatement.executeUpdate();
-//            }
         } catch (SQLException e) {
             throw new RepositoryException(e);
         }
