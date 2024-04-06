@@ -6,6 +6,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.db.ConnectionManager;
+import org.example.db.DBConnectionProvider;
+import org.example.db.HikariConnectionManager;
 import org.example.service.UserService;
 import org.example.service.impl.UserServiceImpl;
 import org.example.servlet.dto.UserIncomingDto;
@@ -19,7 +22,7 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/user/*"})
 public class UserServlet extends HttpServlet {
-    private final transient UserService userService = UserServiceImpl.getInstance();
+    private final transient UserService userService = UserServiceImpl.getInstance(HikariConnectionManager.getInstance());
     private final ObjectMapper objectMapper;
 
     public UserServlet() {

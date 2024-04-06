@@ -1,5 +1,7 @@
 package org.example.service.impl;
 
+import org.example.db.ConnectionManager;
+import org.example.db.DBConnectionProvider;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 import org.example.repository.impl.UserRepositoryImpl;
@@ -16,12 +18,15 @@ public class UserServiceImpl implements UserService {
     private static final UserDtoMapper userDtoMapper = UserDtoMapperImpl.getInstance();
     private static UserService instance;
 
-    private UserServiceImpl() {
+    private static ConnectionManager connectionProvider;
+
+    public UserServiceImpl(ConnectionManager connectionProvider) {
+        this.connectionProvider = connectionProvider;
     }
 
-    public static synchronized UserService getInstance() {
+    public static synchronized UserService getInstance(ConnectionManager connectionProvider) {
         if (instance == null) {
-            instance = new UserServiceImpl();
+            instance = new UserServiceImpl(connectionProvider);
         }
         return instance;
     }

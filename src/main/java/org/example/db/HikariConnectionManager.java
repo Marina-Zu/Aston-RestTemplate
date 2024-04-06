@@ -31,7 +31,7 @@ public class HikariConnectionManager implements ConnectionManager {
         return instance;
     }
 
-    private HikariConnectionManager() {
+    public HikariConnectionManager() {
     }
 
     @Override
