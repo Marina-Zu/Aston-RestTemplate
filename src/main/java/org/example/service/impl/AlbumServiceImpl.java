@@ -2,22 +2,27 @@ package org.example.service.impl;
 
 import org.example.exception.NotFoundException;
 import org.example.model.Album;
+import org.example.model.User;
 import org.example.repository.AlbumRepository;
 import org.example.repository.PostRepository;
+import org.example.repository.UserRepository;
 import org.example.repository.impl.AlbumRepositoryImpl;
 import org.example.repository.impl.PostRepositoryImpl;
+import org.example.repository.impl.UserRepositoryImpl;
 import org.example.service.AlbumService;
 import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
 import org.example.servlet.mapper.AlbumDtoMapper;
 import org.example.servlet.mapper.impl.AlbumDtoMapperImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumServiceImpl implements AlbumService {
     private final AlbumRepository albumRepository = AlbumRepositoryImpl.getInstance();
-    private static AlbumDtoMapper albumDtoMapper = AlbumDtoMapperImpl.getInstance();
-    private static PostRepository postRepository = PostRepositoryImpl.getInstance();
+    private final AlbumDtoMapper albumDtoMapper = AlbumDtoMapperImpl.getInstance();
+    private final PostRepository postRepository = PostRepositoryImpl.getInstance();
+    private final UserRepository userRepository = UserRepositoryImpl.getInstance();
     private static AlbumService instance;
 
     public static synchronized AlbumService getInstance() {
@@ -62,12 +67,17 @@ public class AlbumServiceImpl implements AlbumService {
         checkExistPost(postId);
 
         Album album = albumRepository.findById(albumId);
-        if (album != null) {
-            album.addPost(postRepository.findById(postId));
-            albumRepository.update(album);
-        } else {
-            throw new NotFoundException("Album not found.");
-        }
+        album.getPosts().add(postRepository.findById(postId));
+        albumRepository.update(album);
+    }
+
+    public List<Album> getAlbums(long userId) {
+        return albumRepository.findAllByAuthorId(userId);
+    }
+
+    public void addAlbum(long userId, Album album) {
+        User user = userRepository.findById(userId);
+        user.getAlbums().add(album);
     }
 
     private void checkExistPost(long postId) throws NotFoundException {

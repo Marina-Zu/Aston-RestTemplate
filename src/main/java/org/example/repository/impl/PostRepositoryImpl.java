@@ -7,6 +7,7 @@ import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
+import org.example.service.UserService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -42,19 +43,30 @@ public class PostRepositoryImpl implements PostRepository {
             """;
 
     private static PostRepository instance;
-    private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
-    private final UserRepository userRepository = UserRepositoryImpl.getInstance();
+    private final ConnectionManager connectionManager;
+    private final UserRepository userRepository;
 
-    public static synchronized PostRepository getInstance() {
+    public PostRepositoryImpl(ConnectionManager connectionManager, UserRepository userRepository) {
+        this.connectionManager = connectionManager;
+        this.userRepository = userRepository;
+    }
+
+    public static PostRepository getInstance() {
         if (instance == null) {
-            instance = new PostRepositoryImpl();
+            instance = new PostRepositoryImpl(HikariConnectionManager.getInstance(), UserRepositoryImpl.getInstance());
+        }
+        return instance;
+    }
+    public static PostRepository getInstance(ConnectionManager connectionManager) {
+        if (instance == null) {
+            instance = new PostRepositoryImpl(connectionManager, UserRepositoryImpl.getInstance());
         }
         return instance;
     }
 
     @Override
     public Post save(Post post) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, post.getContent());
@@ -73,7 +85,7 @@ public class PostRepositoryImpl implements PostRepository {
                 }
             }
             User author = post.getAuthor();
-            author.addPost(post);
+            author.getPosts().add(post);
             userRepository.update(author);
 
         } catch (SQLException e) {
@@ -84,7 +96,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void update(Post post) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
 
             preparedStatement.setString(1, post.getContent());
@@ -99,7 +111,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public boolean deleteById(Long id) {
         boolean deleteResult;
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
             deleteResult = preparedStatement.executeUpdate() > 0;
@@ -112,7 +124,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Post findById(Long id) {
         Post post = new Post();
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -128,7 +140,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findAll() {
         List<Post> posts;
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             posts = new ArrayList<>();
@@ -149,7 +161,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findAllByAuthorId(Long id) {
         List<Post> posts = new ArrayList<>();
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_POSTS_BY_AUTHOR_ID_SQL)) {
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

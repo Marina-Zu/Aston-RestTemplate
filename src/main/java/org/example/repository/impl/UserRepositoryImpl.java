@@ -35,18 +35,29 @@ public class UserRepositoryImpl implements UserRepository {
             """;
 
     private static UserRepository instance;
-    private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
+    private final ConnectionManager connectionManager;
 
-    public static synchronized UserRepository getInstance() {
+    private UserRepositoryImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
+
+    public static UserRepository getInstance() {
         if (instance == null) {
-            instance = new UserRepositoryImpl();
+            instance = new UserRepositoryImpl(HikariConnectionManager.getInstance());
+        }
+        return instance;
+    }
+
+    public static UserRepository getInstance(ConnectionManager connectionManager) {
+        if (instance == null) {
+            instance = new UserRepositoryImpl(connectionManager);
         }
         return instance;
     }
 
     @Override
     public User save(User user) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, user.getUsername());
@@ -64,7 +75,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(User user) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
 
             preparedStatement.setString(1, user.getUsername());
@@ -79,7 +90,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean deleteById(Long id) {
         boolean deleteResult;
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
             deleteResult = preparedStatement.executeUpdate() > 0;
@@ -92,7 +103,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findById(Long id) {
         User user = new User();
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -108,7 +119,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> findAll() {
         List<User> users;
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             users = new ArrayList<>();
@@ -132,5 +143,4 @@ public class UserRepositoryImpl implements UserRepository {
         user.setUsername(resultSet.getString("username"));
         return user;
     }
-
 }

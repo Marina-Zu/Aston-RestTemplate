@@ -1,7 +1,7 @@
 package org.example.service.impl;
 
 import org.example.db.ConnectionManager;
-import org.example.db.DBConnectionProvider;
+import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 import org.example.repository.impl.UserRepositoryImpl;
@@ -58,6 +58,10 @@ public class UserServiceImpl implements UserService {
     public List<UserOutGoingDto> findAll() {
         List<User> users = userRepository.findAll();
         return userDtoMapper.map(users);
+    }
 
+    public void addPost(Post post) {
+        User author = post.getAuthor();
+        author.getPosts().add(post);
     }
 }

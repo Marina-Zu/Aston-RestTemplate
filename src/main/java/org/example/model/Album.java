@@ -38,12 +38,6 @@ public class Album {
         this.posts = posts;
     }
 
-    public void addPost(Post post) {
-        if (posts == null)
-            posts = new ArrayList<>();
-        posts.add(post);
-    }
-
     public long getId() {
         return id;
     }

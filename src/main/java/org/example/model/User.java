@@ -2,10 +2,6 @@ package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.example.repository.AlbumRepository;
-import org.example.repository.PostRepository;
-import org.example.repository.impl.AlbumRepositoryImpl;
-import org.example.repository.impl.PostRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +11,6 @@ import java.util.Objects;
 @Table(name = "users")
 public class User {
 
-    private static final PostRepository postRepository = PostRepositoryImpl.getInstance();
-    private static final AlbumRepository albumRepository = AlbumRepositoryImpl.getInstance();
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,7 +18,7 @@ public class User {
     @Column(name = "username", nullable = false, length = 64)
     private String username;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
     @JsonIgnore
     private List<Post> posts;
 
@@ -47,26 +40,22 @@ public class User {
         this.username = username;
     }
 
-    public void addPost(Post post) {
-        if (posts == null) {
-            posts = new ArrayList<>();
-        }
-        posts.add(post);
-    }
-
-    public void addAlbum(Album album) {
-        if (albums == null) {
-            albums = new ArrayList<>();
-        }
-        albums.add(album);
-    }
-
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<Post> getPosts() {
+        if (posts == null)
+            return new ArrayList<>();
+        return posts;
+    }
+
+    public List<Album> getAlbums() {
+        return albums;
     }
 
     public String getUsername() {
@@ -77,19 +66,6 @@ public class User {
         this.username = username;
     }
 
-    public List<Post> getPosts() {
-        if (posts == null) {
-            this.posts = postRepository.findAllByAuthorId(this.id);
-        }
-        return posts;
-    }
-
-    public List<Album> getAlbums() {
-        if (albums == null) {
-            this.albums = albumRepository.findAllByAuthorId(this.id);
-        }
-        return albums;
-    }
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
