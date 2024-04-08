@@ -7,7 +7,6 @@ import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
-import org.example.service.UserService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -57,6 +56,7 @@ public class PostRepositoryImpl implements PostRepository {
         }
         return instance;
     }
+
     public static PostRepository getInstance(ConnectionManager connectionManager) {
         if (instance == null) {
             instance = new PostRepositoryImpl(connectionManager, UserRepositoryImpl.getInstance());
@@ -155,7 +155,15 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public boolean existsById(Long id) {
-        return findById(id) != null;
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException(e.getMessage());
+        }
     }
 
     @Override

@@ -50,22 +50,44 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     private static AlbumRepositoryImpl instance;
 
-    private final ConnectionManager connectionManager = HikariConnectionManager.getInstance();
-    private final UserRepository userRepository = UserRepositoryImpl.getInstance();
+    private final ConnectionManager connectionManager;
+    private final UserRepository userRepository;
 
-    private final PostRepository postRepository = PostRepositoryImpl.getInstance();
-    private final PostAlbumRepository postAlbumRepository = PostAlbumRepositoryImpl.getInstance();
+    private final PostRepository postRepository;
+    private final PostAlbumRepository postAlbumRepository;
 
-    public static synchronized AlbumRepositoryImpl getInstance() {
+    public AlbumRepositoryImpl(ConnectionManager connectionManager,
+                               UserRepository userRepository,
+                               PostRepository postRepository,
+                               PostAlbumRepository postAlbumRepository) {
+        this.connectionManager = connectionManager;
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+        this.postAlbumRepository = postAlbumRepository;
+    }
+
+    public static AlbumRepositoryImpl getInstance() {
         if (instance == null) {
-            instance = new AlbumRepositoryImpl();
+            instance = new AlbumRepositoryImpl(HikariConnectionManager.getInstance(),
+                    UserRepositoryImpl.getInstance(),
+                    PostRepositoryImpl.getInstance(),
+                    PostAlbumRepositoryImpl.getInstance());
+        }
+        return instance;
+    }
+    public static AlbumRepositoryImpl getInstance(ConnectionManager connectionManager) {
+        if (instance == null) {
+            instance = new AlbumRepositoryImpl(connectionManager,
+                    UserRepositoryImpl.getInstance(),
+                    PostRepositoryImpl.getInstance(),
+                    PostAlbumRepositoryImpl.getInstance());
         }
         return instance;
     }
 
     @Override
     public Album save(Album album) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, album.getTitle());
@@ -93,7 +115,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     @Override
     public void update(Album album) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection()) {
+        try (Connection connection = connectionManager.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
                 preparedStatement.setString(1, album.getTitle());
                 preparedStatement.setString(2, album.getDescription());
@@ -117,7 +139,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public boolean deleteById(Long id) {
         boolean deleteResult;
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
             deleteResult = preparedStatement.executeUpdate() > 0;
@@ -130,7 +152,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public Album findById(Long id) {
         Album album = new Album();
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -160,7 +182,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     @Override
     public List<Album> findAll() {
         List<Album> albums;
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             albums = new ArrayList<>();
@@ -180,13 +202,22 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     @Override
     public boolean existsById(Long id) {
-        return findById(id) != null;
+        try(Connection connection = connectionManager.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next();
+        } catch (SQLException e) {
+            throw new RepositoryException(e.getMessage());
+        }
     }
+
 
     @Override
     public List<Album> findAllByAuthorId(Long id) {
         List<Album> albums = new ArrayList<>();
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL)) {
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -207,7 +238,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     @Override
     public void addPost(long albumId, long postId) {
-        try (Connection connection = HikariConnectionManager.getInstance().getConnection();
+        try (Connection connection = connectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(ADD_POST_TO_ALBUM_SQL)) {
             preparedStatement.setLong(1, albumId);
             preparedStatement.setLong(2, postId);

@@ -18,15 +18,15 @@ public class UserServiceImpl implements UserService {
     private static final UserDtoMapper userDtoMapper = UserDtoMapperImpl.getInstance();
     private static UserService instance;
 
-    private static ConnectionManager connectionProvider;
+    private static ConnectionManager connectionManager;
 
-    public UserServiceImpl(ConnectionManager connectionProvider) {
-        this.connectionProvider = connectionProvider;
+    public UserServiceImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
-    public static synchronized UserService getInstance(ConnectionManager connectionProvider) {
+    public static synchronized UserService getInstance(ConnectionManager connectionManager) {
         if (instance == null) {
-            instance = new UserServiceImpl(connectionProvider);
+            instance = new UserServiceImpl(connectionManager);
         }
         return instance;
     }
