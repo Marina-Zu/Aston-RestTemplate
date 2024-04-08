@@ -1,27 +1,18 @@
 package org.example.repository.impl;
 
-import org.example.db.HikariConnectionManager;
 import org.example.db.test.TestConnectionManager;
-import org.example.exception.RepositoryException;
 import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
+
 @Testcontainers
 class PostRepositoryImplTest {
     static PostRepository postRepository;
@@ -41,20 +32,21 @@ class PostRepositoryImplTest {
         postRepository = PostRepositoryImpl.getInstance(new TestConnectionManager(postgreSQLContainer));
     }
 
-    @BeforeEach
-    void beforeEach() {
-        clearPostData();
-    }
+//        @AfterEach
+//    void beforeEach() {
+//        clearPostData();
+//
+//    }
 
-    private void clearPostData() {
-        try (Connection connection = DriverManager.getConnection(postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword());
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM post");
-        } catch (SQLException e) {
-            throw new RepositoryException(e.getMessage());
-        }
-    }
+//    private void clearPostData() {
+//        try (Connection connection = DriverManager.getConnection(postgreSQLContainer.getJdbcUrl(),
+//                postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword());
+//             Statement statement = connection.createStatement()) {
+//            statement.executeUpdate("TRUNCATE TABLE post RESTART IDENTITY CASCADE");
+//        } catch (SQLException e) {
+//            throw new RepositoryException(e.getMessage());
+//        }
+//    }
     @Test
     void save() {
         // Создаем пользователя и сохраняем его
@@ -165,6 +157,7 @@ class PostRepositoryImplTest {
 //            assertEquals(user.getId(), p.getAuthor().getId(), "Author of retrieved post should match the expected author");
 //        }
     }
+
     @Test
     void existsById() {
         // Создаем пользователя и сохраняем его

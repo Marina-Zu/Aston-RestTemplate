@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS album CASCADE;
 CREATE TABLE users
 (
     id       bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
-    username varchar(64) UNIQUE NOT NULL
+    username varchar(64) NOT NULL
 );
 
 CREATE TABLE post

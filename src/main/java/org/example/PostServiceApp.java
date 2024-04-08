@@ -6,6 +6,7 @@ import org.example.util.InitSql;
 
 public class PostServiceApp {
     public static void main(String[] args) {
+
         ConnectionManager connectionManager = HikariConnectionManager.getInstance();
         InitSql.initSqlMigration(connectionManager);
     }

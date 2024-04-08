@@ -1,35 +1,24 @@
 package org.example.service.impl;
 
-import org.example.db.ConnectionManager;
 import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.UserRepository;
-import org.example.repository.impl.UserRepositoryImpl;
 import org.example.service.UserService;
 import org.example.servlet.dto.UserIncomingDto;
 import org.example.servlet.dto.UserOutGoingDto;
 import org.example.servlet.mapper.UserDtoMapper;
-import org.example.servlet.mapper.impl.UserDtoMapperImpl;
 
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository = UserRepositoryImpl.getInstance();
-    private static final UserDtoMapper userDtoMapper = UserDtoMapperImpl.getInstance();
-    private static UserService instance;
+    private final UserRepository userRepository;
+    private final UserDtoMapper userDtoMapper;
 
-    private static ConnectionManager connectionManager;
-
-    public UserServiceImpl(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+    public UserServiceImpl(UserRepository userRepository, UserDtoMapper userDtoMapper) {
+        this.userRepository = userRepository;
+        this.userDtoMapper = userDtoMapper;
     }
 
-    public static synchronized UserService getInstance(ConnectionManager connectionManager) {
-        if (instance == null) {
-            instance = new UserServiceImpl(connectionManager);
-        }
-        return instance;
-    }
 
     @Override
     public UserOutGoingDto save(UserIncomingDto userIncomingDto) {

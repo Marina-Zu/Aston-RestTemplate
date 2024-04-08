@@ -2,6 +2,8 @@ package org.example.servlet;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,11 +24,18 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/user/*"})
 public class UserServlet extends HttpServlet {
-    private final transient UserService userService = UserServiceImpl.getInstance(HikariConnectionManager.getInstance());
+    private final transient UserService userService;
     private final ObjectMapper objectMapper;
 
-    public UserServlet() {
+    public UserServlet(UserService userService) {
+        this.userService = userService;
         this.objectMapper = new ObjectMapper();
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+
+        super.init(config);
     }
 
     private static void setJsonHeader(HttpServletResponse resp) {
