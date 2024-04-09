@@ -1,24 +1,18 @@
 package org.example.service.impl;
 
 import org.example.model.User;
-import org.example.repository.UserRepository;
 import org.example.repository.impl.UserRepositoryImpl;
 import org.example.servlet.dto.UserIncomingDto;
 import org.example.servlet.dto.UserOutGoingDto;
 import org.example.servlet.mapper.UserDtoMapper;
-import org.example.servlet.mapper.impl.UserDtoMapperImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -31,10 +25,7 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+
     @Test
     void save() {
         UserIncomingDto incomingDto = new UserIncomingDto();
@@ -44,7 +35,9 @@ class UserServiceImplTest {
         UserOutGoingDto expectedDto = new UserOutGoingDto();
         expectedDto.setUsername("user");
 
-        when(userRepository.save(user)).thenReturn(user);
+        when(userDtoMapper.mapToUser(any(UserIncomingDto.class))).thenReturn(user);
+        when(userDtoMapper.mapToOutGoing(any(User.class))).thenReturn(expectedDto);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserOutGoingDto result = userService.save(incomingDto);
 
@@ -59,13 +52,13 @@ class UserServiceImplTest {
         User user = new User();
         user.setUsername("user");
 
-        when(userDtoMapper.map(incomingDto)).thenReturn(user);
+        when(userDtoMapper.mapToUser(any(UserIncomingDto.class))).thenReturn(user);
 
         // Act
         userService.update(incomingDto);
 
         // Assert
-        verify(userDtoMapper).map(incomingDto);
+        verify(userDtoMapper).mapToUser(any(UserIncomingDto.class));
         verify(userRepository).update(user);
     }
 

@@ -6,30 +6,24 @@ import org.example.model.User;
 import org.example.repository.AlbumRepository;
 import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
-import org.example.repository.impl.AlbumRepositoryImpl;
-import org.example.repository.impl.PostRepositoryImpl;
-import org.example.repository.impl.UserRepositoryImpl;
 import org.example.service.AlbumService;
 import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
 import org.example.servlet.mapper.AlbumDtoMapper;
-import org.example.servlet.mapper.impl.AlbumDtoMapperImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumServiceImpl implements AlbumService {
-    private final AlbumRepository albumRepository = AlbumRepositoryImpl.getInstance();
-    private final AlbumDtoMapper albumDtoMapper = AlbumDtoMapperImpl.getInstance();
-    private final PostRepository postRepository = PostRepositoryImpl.getInstance();
-    private final UserRepository userRepository = UserRepositoryImpl.getInstance();
-    private static AlbumService instance;
+    private final AlbumDtoMapper albumDtoMapper;
+    private final AlbumRepository albumRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public static synchronized AlbumService getInstance() {
-        if (instance == null) {
-            instance = new AlbumServiceImpl();
-        }
-        return instance;
+    public AlbumServiceImpl(AlbumRepository albumRepository, AlbumDtoMapper albumDtoMapper, PostRepository postRepository, UserRepository userRepository) {
+        this.albumRepository = albumRepository;
+        this.albumDtoMapper = albumDtoMapper;
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -71,9 +65,9 @@ public class AlbumServiceImpl implements AlbumService {
         albumRepository.update(album);
     }
 
-    public List<Album> getAlbums(long userId) {
-        return albumRepository.findAllByAuthorId(userId);
-    }
+//    public List<Album> getAlbums(long userId) {
+//        return albumRepository.findAllByAuthorId(userId);
+//    }
 
     public void addAlbum(long userId, Album album) {
         User user = userRepository.findById(userId);

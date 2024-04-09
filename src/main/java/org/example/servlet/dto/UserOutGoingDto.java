@@ -1,16 +1,13 @@
 package org.example.servlet.dto;
 
-import org.example.model.Album;
-import org.example.model.Post;
-
 import java.util.List;
 
 public class UserOutGoingDto {
     private String username;
-    private List<Post> posts;
-    private List<Album> albums;
+    private List<Long> posts;
+    private List<Long> albums;
 
-    public UserOutGoingDto(String username, List<Post> posts, List<Album> albums) {
+    public UserOutGoingDto(String username, List<Long> posts, List<Long> albums) {
         this.username = username;
         this.posts = posts;
         this.albums = albums;
@@ -24,23 +21,23 @@ public class UserOutGoingDto {
         return username;
     }
 
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public List<Album> getAlbums() {
-        return albums;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setPosts(List<Post> posts) {
+    public List<Long> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Long> posts) {
         this.posts = posts;
     }
 
-    public void setAlbums(List<Album> albums) {
+    public List<Long> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbums(List<Long> albums) {
         this.albums = albums;
     }
 }

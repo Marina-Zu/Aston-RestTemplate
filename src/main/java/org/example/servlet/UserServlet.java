@@ -2,15 +2,11 @@ package org.example.servlet;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.db.ConnectionManager;
-import org.example.db.DBConnectionProvider;
-import org.example.db.HikariConnectionManager;
+import org.example.context.AppContext;
 import org.example.service.UserService;
 import org.example.service.impl.UserServiceImpl;
 import org.example.servlet.dto.UserIncomingDto;
@@ -24,33 +20,12 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/user/*"})
 public class UserServlet extends HttpServlet {
-    private final transient UserService userService;
+    private transient UserService userService;
     private final ObjectMapper objectMapper;
 
-    public UserServlet(UserService userService) {
-        this.userService = userService;
+    public UserServlet() {
         this.objectMapper = new ObjectMapper();
-    }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-
-        super.init(config);
-    }
-
-    private static void setJsonHeader(HttpServletResponse resp) {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-    }
-
-    private static String getJson(HttpServletRequest req) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader postData = req.getReader();
-        String line;
-        while ((line = postData.readLine()) != null) {
-            sb.append(line);
-        }
-        return sb.toString();
+        this.userService = AppContext.getBean(UserServiceImpl.class);
     }
 
     @Override
@@ -78,7 +53,6 @@ public class UserServlet extends HttpServlet {
         printWriter.write(responseAnswer);
         printWriter.flush();
     }
-
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -138,4 +112,20 @@ public class UserServlet extends HttpServlet {
         printWriter.write(responseAnswer);
         printWriter.flush();
     }
+
+    private static void setJsonHeader(HttpServletResponse resp) {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+    }
+
+    private static String getJson(HttpServletRequest req) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader postData = req.getReader();
+        String line;
+        while ((line = postData.readLine()) != null) {
+            sb.append(line);
+        }
+        return sb.toString();
+    }
+
 }

@@ -1,6 +1,7 @@
 package org.example.servlet.mapper;
 
 import org.example.model.Album;
+import org.example.model.Post;
 import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
 import org.mapstruct.Mapper;
@@ -15,4 +16,8 @@ public interface AlbumDtoMapper {
     AlbumOutGoingDto map(Album album);
 
     List<AlbumOutGoingDto> map(List<Album> albums);
+
+    default Long mapToId(Post post) {
+        return post.getId();
+    }
 }

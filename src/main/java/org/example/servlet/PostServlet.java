@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.context.AppContext;
 import org.example.service.PostService;
 import org.example.service.impl.PostServiceImpl;
 import org.example.servlet.dto.PostIncomingDto;
@@ -18,10 +19,11 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/post/*"})
 public class PostServlet extends HttpServlet {
-    private final transient PostService postService = PostServiceImpl.getInstance();
+    private final transient PostService postService;
     private final ObjectMapper objectMapper;
 
     public PostServlet() {
+        this.postService = AppContext.getBean(PostServiceImpl.class);
         this.objectMapper = new ObjectMapper();
     }
 

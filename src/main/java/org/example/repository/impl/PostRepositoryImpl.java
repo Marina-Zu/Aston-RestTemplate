@@ -1,7 +1,6 @@
 package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
-import org.example.db.HikariConnectionManager;
 import org.example.exception.RepositoryException;
 import org.example.model.Post;
 import org.example.model.User;
@@ -35,33 +34,12 @@ public class PostRepositoryImpl implements PostRepository {
             SELECT * FROM post;
             """;
 
-    public static final String FIND_ALL_POSTS_BY_AUTHOR_ID_SQL = """
-            SELECT *
-            FROM post
-            WHERE author_id = ?;
-            """;
-
-    private static PostRepository instance;
-    private final ConnectionManager connectionManager;
+    private ConnectionManager connectionManager;
     private final UserRepository userRepository;
 
     public PostRepositoryImpl(ConnectionManager connectionManager, UserRepository userRepository) {
         this.connectionManager = connectionManager;
         this.userRepository = userRepository;
-    }
-
-    public static PostRepository getInstance() {
-        if (instance == null) {
-            instance = new PostRepositoryImpl(HikariConnectionManager.getInstance(), UserRepositoryImpl.getInstance());
-        }
-        return instance;
-    }
-
-    public static PostRepository getInstance(ConnectionManager connectionManager) {
-        if (instance == null) {
-            instance = new PostRepositoryImpl(connectionManager, UserRepositoryImpl.getInstance());
-        }
-        return instance;
     }
 
     @Override
@@ -84,9 +62,6 @@ public class PostRepositoryImpl implements PostRepository {
                     throw new RepositoryException("Failed to save post, no ID obtained.");
                 }
             }
-            User author = post.getAuthor();
-            author.getPosts().add(post);
-            userRepository.update(author);
 
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
@@ -166,28 +141,6 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
-    @Override
-    public List<Post> findAllByAuthorId(Long id) {
-        List<Post> posts = new ArrayList<>();
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_POSTS_BY_AUTHOR_ID_SQL)) {
-            preparedStatement.setLong(1, id);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Post post = new Post();
-                    post.setId(resultSet.getLong("id"));
-                    post.setContent(resultSet.getString("content"));
-                    User author = userRepository.findById(id);
-                    post.setAuthor(author);
-                    posts.add(post);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException(e.getMessage());
-        }
-        return posts;
-    }
-
     private Post createPost(ResultSet resultSet) throws SQLException {
         Post post = new Post();
         post.setId(resultSet.getLong("id"));
@@ -197,4 +150,5 @@ public class PostRepositoryImpl implements PostRepository {
         post.setAuthor(user);
         return post;
     }
+
 }

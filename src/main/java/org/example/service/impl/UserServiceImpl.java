@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import org.example.model.Album;
 import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.UserRepository;
@@ -22,13 +23,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserOutGoingDto save(UserIncomingDto userIncomingDto) {
-        User user = userRepository.save(userDtoMapper.map(userIncomingDto));
-        return userDtoMapper.map(user);
+        User user = userRepository.save(userDtoMapper.mapToUser(userIncomingDto));
+        return userDtoMapper.mapToOutGoing(user);
     }
 
     @Override
     public void update(UserIncomingDto userIncomingDto) {
-        User user = userDtoMapper.map(userIncomingDto);
+        User user = userDtoMapper.mapToUser(userIncomingDto);
         userRepository.update(user);
     }
 
@@ -40,13 +41,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserOutGoingDto findById(long id) {
         User user = userRepository.findById(id);
-        return userDtoMapper.map(user);
+        List<Post> posts = userRepository.findPostsByUserId(id);
+        List<Album> albums = userRepository.findAllByAuthorId(id);
+        user.setPosts(posts);
+        user.setAlbums(albums);
+        return userDtoMapper.mapToOutGoing(user);
     }
 
     @Override
     public List<UserOutGoingDto> findAll() {
         List<User> users = userRepository.findAll();
-        return userDtoMapper.map(users);
+        return userDtoMapper.mapToUotGoings(users);
     }
 
     public void addPost(Post post) {

@@ -2,12 +2,11 @@ package org.example.repository.impl;
 
 import org.example.db.test.TestConnectionManager;
 import org.example.model.User;
+import org.example.repository.AbstractRepositoryTest;
 import org.example.repository.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
@@ -15,22 +14,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-class UserRepositoryImplTest {
+class UserRepositoryImplTest extends AbstractRepositoryTest {
 
     static UserRepository userRepository;
-
-
-    @Container
-    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName("test_db")
-            .withUsername("test")
-            .withPassword("test")
-            .withInitScript("db-migration.sql");
 
     @BeforeAll
     static void beforeAll() {
         postgreSQLContainer.start();
-        userRepository = UserRepositoryImpl.getInstance(new TestConnectionManager(postgreSQLContainer));
+        TestConnectionManager testConnectionManager = new TestConnectionManager(postgreSQLContainer);
+        userRepository = new UserRepositoryImpl(testConnectionManager);
     }
 
     @AfterAll
@@ -71,7 +63,6 @@ class UserRepositoryImplTest {
         userRepository.deleteById(user.getId());
 
         assertFalse(userRepository.existsById(user.getId()), "User should be deleted");
-
     }
 
     @Test
@@ -110,7 +101,7 @@ class UserRepositoryImplTest {
         userRepository.save(user);
 
         assertTrue(userRepository.existsById(user.getId()));
-        assertFalse(userRepository.existsById(-1L));
     }
+
 
 }

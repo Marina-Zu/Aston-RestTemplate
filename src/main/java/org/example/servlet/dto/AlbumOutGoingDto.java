@@ -1,20 +1,18 @@
 package org.example.servlet.dto;
 
-import org.example.model.Post;
-
 import java.util.List;
 
 public class AlbumOutGoingDto {
     private String title;
     private String description;
     private long authorId;
-    private List<Post> posts;
+    private List<Long> postIds;
 
-    public AlbumOutGoingDto(String title, String description, long authorId, List<Post> posts) {
+    public AlbumOutGoingDto(String title, String description, long authorId, List<Long> posts) {
         this.title = title;
         this.description = description;
         this.authorId = authorId;
-        this.posts = posts;
+        this.postIds = posts;
     }
 
     public String getTitle() {
@@ -41,11 +39,11 @@ public class AlbumOutGoingDto {
         this.authorId = authorId;
     }
 
-    public List<Post> getPosts() {
-        return posts;
+    public List<Long> getPostIds() {
+        return postIds;
     }
 
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
+    public void setPostIds(List<Long> postIds) {
+        this.postIds = postIds;
     }
 }

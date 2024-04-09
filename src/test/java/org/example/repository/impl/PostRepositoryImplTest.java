@@ -3,33 +3,26 @@ package org.example.repository.impl;
 import org.example.db.test.TestConnectionManager;
 import org.example.model.Post;
 import org.example.model.User;
+import org.example.repository.AbstractRepositoryTest;
 import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-class PostRepositoryImplTest {
+class PostRepositoryImplTest extends AbstractRepositoryTest {
     static PostRepository postRepository;
     static UserRepository userRepository;
-
-    @Container
-    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName("test_db")
-            .withUsername("test")
-            .withPassword("test")
-            .withInitScript("db-migration.sql");
 
     @BeforeAll
     static void beforeAll() {
         postgreSQLContainer.start();
-        userRepository = UserRepositoryImpl.getInstance(new TestConnectionManager(postgreSQLContainer));
-        postRepository = PostRepositoryImpl.getInstance(new TestConnectionManager(postgreSQLContainer));
+        TestConnectionManager testConnectionManager = new TestConnectionManager(postgreSQLContainer);
+        userRepository = new UserRepositoryImpl(testConnectionManager);
+        postRepository = new PostRepositoryImpl(testConnectionManager, userRepository);
     }
 
 //        @AfterEach

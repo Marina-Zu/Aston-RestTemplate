@@ -1,8 +1,9 @@
 package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
-import org.example.db.HikariConnectionManager;
 import org.example.exception.RepositoryException;
+import org.example.model.Album;
+import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 
@@ -34,25 +35,23 @@ public class UserRepositoryImpl implements UserRepository {
             SELECT * FROM users;
             """;
 
-    private static UserRepository instance;
-    private final ConnectionManager connectionManager;
+    public static final String FIND_ALL_POSTS_BY_AUTHOR_ID_SQL = """
+            SELECT *
+            FROM post
+            WHERE author_id = ?;
+            """;
 
-    private UserRepositoryImpl(ConnectionManager connectionManager) {
+
+    public static final String FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL = """
+            SELECT *
+            FROM album
+            WHERE author_id = ?;
+            """;
+
+    private ConnectionManager connectionManager;
+
+    public UserRepositoryImpl(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
-    }
-
-    public static UserRepository getInstance() {
-        if (instance == null) {
-            instance = new UserRepositoryImpl(HikariConnectionManager.getInstance());
-        }
-        return instance;
-    }
-
-    public static UserRepository getInstance(ConnectionManager connectionManager) {
-        if (instance == null) {
-            instance = new UserRepositoryImpl(connectionManager);
-        }
-        return instance;
     }
 
     @Override
@@ -102,13 +101,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findById(Long id) {
-        User user = new User();
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                user = createUser(resultSet);
+        User user = null;
+        try (Connection connection = connectionManager.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+                preparedStatement.setLong(1, id);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    user = createUser(resultSet);
+                }
             }
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
@@ -133,16 +133,52 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean existsById(Long id) {
+    public List<Post> findPostsByUserId(Long id) {
+        List<Post> posts = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_POSTS_BY_AUTHOR_ID_SQL)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            return resultSet.next();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Post post = new Post();
+                    post.setId(resultSet.getLong("id"));
+                    post.setContent(resultSet.getString("content"));
+                    User author = findById(id);
+                    post.setAuthor(author);
+                    posts.add(post);
+                }
+            }
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
+        return posts;
+    }
+
+    @Override
+    public List<Album> findAllByAuthorId(Long id) {
+        List<Album> albums = new ArrayList<>();
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Album album = new Album();
+                    album.setId(resultSet.getLong("id"));
+                    album.setTitle(resultSet.getString("title"));
+                    album.setDescription(resultSet.getString("description"));
+                    album.setAuthorId(id);
+                    albums.add(album);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException(e.getMessage());
+        }
+        return albums;
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return findById(id) != null;
     }
 
     private User createUser(ResultSet resultSet) throws SQLException {
@@ -150,5 +186,12 @@ public class UserRepositoryImpl implements UserRepository {
         user.setId(resultSet.getLong("id"));
         user.setUsername(resultSet.getString("username"));
         return user;
+    }
+
+    private Post createPost(ResultSet resultSet) throws SQLException {
+        Post post = new Post();
+        post.setId(resultSet.getLong("id"));
+        post.setContent(resultSet.getString("content"));
+        return post;
     }
 }

@@ -1,14 +1,11 @@
 package org.example.repository.impl;
 
 import org.example.db.ConnectionManager;
-import org.example.db.HikariConnectionManager;
 import org.example.exception.RepositoryException;
 import org.example.model.Album;
 import org.example.model.Post;
 import org.example.repository.AlbumRepository;
-import org.example.repository.PostAlbumRepository;
 import org.example.repository.PostRepository;
-import org.example.repository.UserRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -37,52 +34,18 @@ public class AlbumRepositoryImpl implements AlbumRepository {
             SELECT * FROM album;
             """;
 
-    public static final String FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL = """
-            SELECT *
-            FROM album
-            WHERE author_id = ?;
-            """;
-
     public static final String ADD_POST_TO_ALBUM_SQL = """
             INSERT INTO post_album (album_id, post_id)
             VALUES (?, ?);
             """;
+    private static final String FIND_ALL_POST_IDS_BY_ALBUM_ID_SQL = "SELECT post_id FROM post_album WHERE album_id = ?";
 
-    private static AlbumRepositoryImpl instance;
-
-    private final ConnectionManager connectionManager;
-    private final UserRepository userRepository;
-
+    private ConnectionManager connectionManager;
     private final PostRepository postRepository;
-    private final PostAlbumRepository postAlbumRepository;
 
-    public AlbumRepositoryImpl(ConnectionManager connectionManager,
-                               UserRepository userRepository,
-                               PostRepository postRepository,
-                               PostAlbumRepository postAlbumRepository) {
+    public AlbumRepositoryImpl(ConnectionManager connectionManager, PostRepository postRepository) {
         this.connectionManager = connectionManager;
-        this.userRepository = userRepository;
         this.postRepository = postRepository;
-        this.postAlbumRepository = postAlbumRepository;
-    }
-
-    public static AlbumRepositoryImpl getInstance() {
-        if (instance == null) {
-            instance = new AlbumRepositoryImpl(HikariConnectionManager.getInstance(),
-                    UserRepositoryImpl.getInstance(),
-                    PostRepositoryImpl.getInstance(),
-                    PostAlbumRepositoryImpl.getInstance());
-        }
-        return instance;
-    }
-    public static AlbumRepositoryImpl getInstance(ConnectionManager connectionManager) {
-        if (instance == null) {
-            instance = new AlbumRepositoryImpl(connectionManager,
-                    UserRepositoryImpl.getInstance(),
-                    PostRepositoryImpl.getInstance(),
-                    PostAlbumRepositoryImpl.getInstance());
-        }
-        return instance;
     }
 
     @Override
@@ -163,7 +126,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 album.setAuthorId(resultSet.getLong("author_id"));
             }
 
-            List<Long> postIds = postAlbumRepository.findAllPostIdsByAlbumId(id);
+            List<Long> postIds = findAllPostIdsByAlbumId(id);
 
             List<Post> posts = new ArrayList<>();
             for (Long postId : postIds) {
@@ -202,8 +165,8 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
     @Override
     public boolean existsById(Long id) {
-        try(Connection connection = connectionManager.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -213,27 +176,20 @@ public class AlbumRepositoryImpl implements AlbumRepository {
         }
     }
 
-
     @Override
-    public List<Album> findAllByAuthorId(Long id) {
-        List<Album> albums = new ArrayList<>();
+    public List<Long> findAllPostIdsByAlbumId(Long albumId) {
+        List<Long> postIds = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_ALBUMS_BY_AUTHOR_ID_SQL)) {
-            preparedStatement.setLong(1, id);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Album album = new Album();
-                    album.setId(resultSet.getLong("id"));
-                    album.setTitle(resultSet.getString("title"));
-                    album.setDescription(resultSet.getString("description"));
-                    album.setAuthorId(id);
-                    albums.add(album);
-                }
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_POST_IDS_BY_ALBUM_ID_SQL)) {
+            preparedStatement.setLong(1, albumId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                postIds.add(resultSet.getLong("post_id"));
             }
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
-        return albums;
+        return postIds;
     }
 
     @Override

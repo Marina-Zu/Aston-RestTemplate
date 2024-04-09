@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.context.AppContext;
 import org.example.service.AlbumService;
 import org.example.service.impl.AlbumServiceImpl;
 import org.example.servlet.dto.AlbumIncomingDto;
@@ -18,10 +19,11 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/album/*"})
 public class AlbumServlet extends HttpServlet {
-    private final transient AlbumService albumService = AlbumServiceImpl.getInstance();
+    private final transient AlbumService albumService;
     private final ObjectMapper objectMapper;
 
     public AlbumServlet() {
+        this.albumService = AppContext.getBean(AlbumServiceImpl.class);
         this.objectMapper = new ObjectMapper();
     }
 

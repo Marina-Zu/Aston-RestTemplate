@@ -49,12 +49,16 @@ public class User {
     }
 
     public List<Post> getPosts() {
-        if (posts == null)
+        if (posts == null) {
             return new ArrayList<>();
+        }
         return posts;
     }
 
     public List<Album> getAlbums() {
+        if (albums == null) {
+            return new ArrayList<>();
+        }
         return albums;
     }
 

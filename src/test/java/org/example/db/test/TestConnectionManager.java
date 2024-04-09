@@ -1,6 +1,5 @@
 package org.example.db.test;
 
-
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.example.db.ConnectionManager;

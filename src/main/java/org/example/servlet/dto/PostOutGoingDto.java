@@ -1,19 +1,16 @@
 package org.example.servlet.dto;
 
-import org.example.model.Album;
-import org.example.model.User;
-
 import java.util.List;
 
 public class PostOutGoingDto {
     private String content;
-    private User author;
-    private List<Album> albums;
+    private Long authorId;
+    private List<Long> albumIds;
 
-    public PostOutGoingDto(String content, User author, List<Album> albums) {
+    public PostOutGoingDto(String content, Long authorId, List<Long> albums) {
         this.content = content;
-        this.author = author;
-        this.albums = albums;
+        this.authorId = authorId;
+        this.albumIds = albums;
     }
 
     public String getContent() {
@@ -24,19 +21,19 @@ public class PostOutGoingDto {
         this.content = content;
     }
 
-    public User getAuthor() {
-        return author;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
-    public List<Album> getAlbums() {
-        return albums;
+    public List<Long> getAlbumIds() {
+        return albumIds;
     }
 
-    public void setAlbums(List<Album> albums) {
-        this.albums = albums;
+    public void setAlbumIds(List<Long> albumIds) {
+        this.albumIds = albumIds;
     }
 }

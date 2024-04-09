@@ -1,5 +1,7 @@
 package org.example.servlet.mapper;
 
+import org.example.model.Album;
+import org.example.model.Post;
 import org.example.model.User;
 import org.example.servlet.dto.UserIncomingDto;
 import org.example.servlet.dto.UserOutGoingDto;
@@ -10,10 +12,17 @@ import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserDtoMapper {
-    User map(UserIncomingDto userIncomingDto);
+    User mapToUser(UserIncomingDto userIncomingDto);
 
-    UserOutGoingDto map(User user);
+    UserOutGoingDto mapToOutGoing(User user);
 
-    List<UserOutGoingDto> map(List<User> user);
+    List<UserOutGoingDto> mapToUotGoings(List<User> user);
 
+    default Long mapById(Post post){
+        return post.getId();
+    }
+
+    default Long mapById(Album album){
+        return album.getId();
+    }
 }
