@@ -9,6 +9,7 @@ import org.example.repository.AlbumRepository;
 import org.example.repository.PostRepository;
 import org.example.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -20,6 +21,8 @@ class AlbumRepositoryImplTest extends AbstractRepositoryTest {
     private static AlbumRepository albumRepository;
     private static UserRepository userRepository;
     private static PostRepository postRepository;
+    private static User user;
+    private static Album album;
 
     @BeforeAll
     static void beforeAll() {
@@ -30,15 +33,19 @@ class AlbumRepositoryImplTest extends AbstractRepositoryTest {
         albumRepository = new AlbumRepositoryImpl(testConnectionManager, postRepository);
     }
 
-    @Test
-    void save() {
-        User user = new User();
+    @BeforeEach
+    void beforeEach() {
+        user = new User();
         user.setUsername("test_user");
         userRepository.save(user);
 
-        Album album = new Album();
+        album = new Album();
         album.setTitle("Test Album");
         album.setDescription("Test Album Description");
+    }
+
+    @Test
+    void testSaveSuccessful() {
         album.setAuthorId(user.getId());
 
         Album savedAlbum = albumRepository.save(album);
@@ -47,38 +54,20 @@ class AlbumRepositoryImplTest extends AbstractRepositoryTest {
     }
 
     @Test
-    void update() {
-//        // Create user
-//        User user = new User();
-//        user.setUsername("test_user");
-//        userRepository.save(user);
-//
-//        // Create album
-//        Album album = new Album();
-//        album.setTitle("Test Album");
-//        album.setDescription("Test Album Description");
-//        album.setAuthorId(user.getId());
-//        album = albumRepository.save(album);
-//
-//        // Update album
-//        String updatedTitle = "Updated Album Title";
-//        album.setTitle(updatedTitle);
-//        albumRepository.update(album);
-//
-//        // Check that album is updated
-//        Album updatedAlbum = albumRepository.findById(album.getId());
-//        assertEquals(updatedTitle, updatedAlbum.getTitle(), "Album title should be updated");
+    void testUpdateSuccessful() {
+        album.setAuthorId(user.getId());
+        album = albumRepository.save(album);
+
+        String updatedTitle = "Updated Album Title";
+        album.setTitle(updatedTitle);
+        albumRepository.update(album);
+
+        Album updatedAlbum = albumRepository.findById(album.getId());
+        assertEquals(updatedTitle, updatedAlbum.getTitle(), "Album title should be updated");
     }
 
     @Test
-    void deleteById() {
-        User user = new User();
-        user.setUsername("test_user");
-        userRepository.save(user);
-
-        Album album = new Album();
-        album.setTitle("Test Album");
-        album.setDescription("Test Album Description");
+    void testDeleteByIdSuccessful() {
         album.setAuthorId(user.getId());
         album = albumRepository.save(album);
 
@@ -88,14 +77,7 @@ class AlbumRepositoryImplTest extends AbstractRepositoryTest {
     }
 
     @Test
-    void findById() {
-        User user = new User();
-        user.setUsername("test_user");
-        userRepository.save(user);
-
-        Album album = new Album();
-        album.setTitle("Test Album");
-        album.setDescription("Test Album Description");
+    void testFindByIdSuccessful() {
         album.setAuthorId(user.getId());
         album = albumRepository.save(album);
 
@@ -108,91 +90,20 @@ class AlbumRepositoryImplTest extends AbstractRepositoryTest {
     }
 
     @Test
-    void findAll() {
-//        // Create user
-//        User user = new User();
-//        user.setUsername("test_user");
-//        userRepository.save(user);
-//
-//        // Create multiple albums
-//        Album album1 = new Album();
-//        album1.setTitle("Test Album 1");
-//        album1.setDescription("Test Album Description 1");
-//        album1.setAuthorId(user.getId());
-//        albumRepository.save(album1);
-//
-//        Album album2 = new Album();
-//        album2.setTitle("Test Album 2");
-//        album2.setDescription("Test Album Description 2");
-//        album2.setAuthorId(user.getId());
-//        albumRepository.save(album2);
-//
-//        // Find all albums
-//        List<Album> allAlbums = albumRepository.findAll();
-//
-//        // Check that all albums are retrieved
-//        assertEquals(2, allAlbums.size(), "Number of retrieved albums should match the number of saved albums");
-//
-//        // Check that all albums have correct author
-//        for (Album a : allAlbums) {
-//            assertEquals(user.getId(), a.getAuthorId(), "Author of retrieved album should match the expected author");
-//        }
-    }
-
-    @Test
-    void existsById() {
-        User user = new User();
-        user.setUsername("test_user");
-        userRepository.save(user);
-
-        Album album = new Album();
-        album.setTitle("Test Album");
-        album.setDescription("Test Album Description");
+    void testExistsByIdSuccessful() {
         album.setAuthorId(user.getId());
         album = albumRepository.save(album);
 
         assertTrue(albumRepository.existsById(album.getId()), "Album should exist");
     }
 
-//    @Test
-//    void findAllByAuthorId() {
-//        User user = new User();
-//        user.setUsername("test_user");
-//        userRepository.save(user);
-//
-//        Album album1 = new Album();
-//        album1.setTitle("Test Album 1");
-//        album1.setDescription("Test Album Description 1");
-//        album1.setAuthorId(user.getId());
-//        albumRepository.save(album1);
-//
-//        Album album2 = new Album();
-//        album2.setTitle("Test Album 2");
-//        album2.setDescription("Test Album Description 2");
-//        album2.setAuthorId(user.getId());
-//        albumRepository.save(album2);
-//
-//        List<Album> userAlbums = albumRepository.findAllByAuthorId(user.getId());
-//
-//        for (Album a : userAlbums) {
-//            assertEquals(user.getId(), a.getAuthorId(), "Author ID of retrieved album should match the expected author");
-//        }
-//    }
-
     @Test
-    void addPost() {
-        User user = new User();
-        user.setUsername("test_user");
-        userRepository.save(user);
-
+    void testAddPostSuccessful() {
         Post post = new Post();
         post.setContent("Test Post Content");
         post.setAuthor(user);
         postRepository.save(post);
 
-        Album album = new Album();
-        album.setTitle("Test Album");
-        album.setDescription("Test Album Description");
         album.setAuthorId(user.getId());
         albumRepository.save(album);
 
@@ -201,5 +112,4 @@ class AlbumRepositoryImplTest extends AbstractRepositoryTest {
         Album updatedAlbum = albumRepository.findById(album.getId());
         assertTrue(updatedAlbum.getPosts().contains(post), "Album should contain added post");
     }
-
 }

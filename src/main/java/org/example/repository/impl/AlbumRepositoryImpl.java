@@ -85,15 +85,6 @@ public class AlbumRepositoryImpl implements AlbumRepository {
                 preparedStatement.setLong(3, album.getId());
                 preparedStatement.executeUpdate();
             }
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(ADD_POST_TO_ALBUM_SQL)) {
-                for (Post post : album.getPosts()) {
-                    preparedStatement.setLong(1, album.getId());
-                    preparedStatement.setLong(2, post.getId());
-                    preparedStatement.executeUpdate();
-                }
-            }
-
         } catch (SQLException e) {
             throw new RepositoryException(e);
         }

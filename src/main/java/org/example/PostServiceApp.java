@@ -16,9 +16,6 @@ import org.example.util.InitSql;
 import org.mapstruct.factory.Mappers;
 
 public class PostServiceApp {
-//    public static void main(String[] args) {
-//        initAppContext();
-//    }
 
     public static void initAppContext() {
         UserDtoMapper userDtoMapper = Mappers.getMapper(UserDtoMapper.class);
