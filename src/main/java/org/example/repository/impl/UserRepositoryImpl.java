@@ -67,7 +67,7 @@ public class UserRepositoryImpl implements UserRepository {
                 user.setId(resultSet.getLong("id"));
             }
         } catch (SQLException e) {
-            throw new RepositoryException(e);
+            throw new RepositoryException(e.getMessage());
         }
         return user;
     }
@@ -82,7 +82,7 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RepositoryException(e);
+            throw new RepositoryException(e.getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setLong(1, id);
             deleteResult = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new RepositoryException(e);
+            throw new RepositoryException(e.getMessage());
         }
         return deleteResult;
     }

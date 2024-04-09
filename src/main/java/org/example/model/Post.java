@@ -25,6 +25,11 @@ public class Post {
 
     public Post() {
     }
+    public Post(long id, String content, User author) {
+        this.id = id;
+        this.content = content;
+        this.author = author;
+    }
 
     public Post(long id, String content, User author, List<Album> albums) {
         this.id = id;
