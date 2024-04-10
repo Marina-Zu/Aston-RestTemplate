@@ -19,11 +19,16 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/album/*"})
 public class AlbumServlet extends HttpServlet {
-    private final transient AlbumService albumService;
+    private  transient AlbumService albumService;
     private final ObjectMapper objectMapper;
 
     public AlbumServlet() {
         this.albumService = AppContext.getBean(AlbumServiceImpl.class);
+        this.objectMapper = new ObjectMapper();
+    }
+
+    public AlbumServlet(AlbumService albumService) {
+        this.albumService = albumService;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -54,7 +59,7 @@ public class AlbumServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_OK);
                 responseAnswer = objectMapper.writeValueAsString(albumDtoList);
             } else {
-                long albumId = Long.parseLong(pathPart[1]);
+                Long albumId = Long.parseLong(pathPart[1]);
                 AlbumOutGoingDto albumDto = albumService.findById(albumId);
                 resp.setStatus(HttpServletResponse.SC_OK);
                 responseAnswer = objectMapper.writeValueAsString(albumDto);
