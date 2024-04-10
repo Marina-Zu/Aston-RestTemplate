@@ -8,6 +8,9 @@ public class AlbumOutGoingDto {
     private long authorId;
     private List<Long> postIds;
 
+    public AlbumOutGoingDto() {
+    }
+
     public AlbumOutGoingDto(String title, String description, long authorId, List<Long> posts) {
         this.title = title;
         this.description = description;

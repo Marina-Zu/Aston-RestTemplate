@@ -178,7 +178,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean existsById(Long id) {
-        return findById(id) != null;
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException(e.getMessage());
+        }
     }
 
     private User createUser(ResultSet resultSet) throws SQLException {

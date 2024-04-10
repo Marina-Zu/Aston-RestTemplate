@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 import org.example.exception.NotFoundException;
 import org.example.model.Album;
+import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.AlbumRepository;
 import org.example.repository.PostRepository;
@@ -11,6 +12,7 @@ import org.example.servlet.dto.AlbumIncomingDto;
 import org.example.servlet.dto.AlbumOutGoingDto;
 import org.example.servlet.mapper.AlbumDtoMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumServiceImpl implements AlbumService {
@@ -62,17 +64,9 @@ public class AlbumServiceImpl implements AlbumService {
 
         Album album = albumRepository.findById(albumId);
         album.getPosts().add(postRepository.findById(postId));
-        albumRepository.update(album);
+        albumRepository.addPost(albumId, postId);
     }
 
-//    public List<Album> getAlbums(long userId) {
-//        return albumRepository.findAllByAuthorId(userId);
-//    }
-
-    public void addAlbum(long userId, Album album) {
-        User user = userRepository.findById(userId);
-        user.getAlbums().add(album);
-    }
 
     private void checkExistPost(long postId) throws NotFoundException {
         if (!postRepository.existsById(postId)) {
@@ -85,5 +79,4 @@ public class AlbumServiceImpl implements AlbumService {
             throw new NotFoundException("Album not found.");
         }
     }
-
 }
