@@ -16,6 +16,7 @@ public interface PostDtoMapper {
     @Mapping(target = "author", source = "author")
     Post map(PostIncomingDto postIncomingDto);
 
+    @Mapping(target = "authorId", source = "author")
     PostOutGoingDto map(Post post);
 
     List<PostOutGoingDto> map(List<Post> posts);
@@ -24,6 +25,9 @@ public interface PostDtoMapper {
         User user = new User();
         user.setId(userId);
         return user;
+    }
+    default long mapToId(User user) {
+        return user.getId();
     }
 
     default Long mapToId(Album album) {

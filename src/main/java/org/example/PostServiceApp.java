@@ -29,7 +29,7 @@ public class PostServiceApp {
         AlbumRepositoryImpl albumRepository = new AlbumRepositoryImpl(connectionManager, postRepository);
         UserServiceImpl userService = new UserServiceImpl(userRepository, userDtoMapper);
         PostServiceImpl postService = new PostServiceImpl(postRepository, postDtoMapper);
-        AlbumServiceImpl albumService = new AlbumServiceImpl(albumRepository, albumDtoMapper, postRepository, userRepository);
+        AlbumServiceImpl albumService = new AlbumServiceImpl(albumRepository, albumDtoMapper, postRepository);
 
         AppContext.putBean(UserServiceImpl.class, userService);
         AppContext.putBean(AlbumServiceImpl.class, albumService);
