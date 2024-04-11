@@ -2,7 +2,6 @@ package org.example.servlet;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.exception.NotFoundException;
 import org.example.service.AlbumService;
 import org.example.servlet.dto.AlbumOutGoingDto;
 import org.junit.jupiter.api.Test;
@@ -10,19 +9,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AlbumServletTest {
     @Mock
     private AlbumService albumService;
-    @Mock
-    private ObjectMapper objectMapper;
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -34,7 +35,7 @@ class AlbumServletTest {
     private AlbumServlet albumServlet;
 
     @Test
-    void doGet() throws Exception {
+    void testDoGetSuccessful() throws Exception {
         long albumId = 1L;
         AlbumOutGoingDto albumDto = new AlbumOutGoingDto("Test Album", "Test Description", 1L, null);
 
@@ -50,9 +51,22 @@ class AlbumServletTest {
         verify(printWriter).flush();
     }
 
+    @Test
+    void testDoGetAllSuccessful() throws Exception {
+        when(request.getPathInfo()).thenReturn("/all");
+        when(response.getWriter()).thenReturn(printWriter);
+        when(albumService.findAll()).thenReturn(Collections.singletonList(new AlbumOutGoingDto()));
+
+        albumServlet.doGet(request, response);
+
+        verify(response).setStatus(HttpServletResponse.SC_OK);
+        verify(printWriter).write("[{\"title\":null,\"description\":null,\"authorId\":0,\"postIds\":null}]");
+        verify(printWriter).flush();
+
+    }
 
     @Test
-    void doGetInvalidAlbumId() throws Exception {
+    void testDoGetInvalidAlbumId() throws Exception {
         long albumId = -1L;
 
         when(request.getPathInfo()).thenReturn("/" + albumId);
@@ -70,7 +84,7 @@ class AlbumServletTest {
 
 
     @Test
-    void doDelete() throws IOException {
+    void testDoDeleteSuccessful() throws IOException {
         long albumId = 1L;
 
         when(request.getPathInfo()).thenReturn("/" + albumId);
@@ -86,7 +100,7 @@ class AlbumServletTest {
     }
 
     @Test
-    public void testDoPost() throws IOException {
+    void testDoPostInvalidAlbumId() throws IOException {
         String json = "";
 
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
@@ -100,12 +114,10 @@ class AlbumServletTest {
     }
 
     @Test
-    public void testDoPutInValidJson() throws IOException {
+    void testDoPutInvalidJson() throws IOException {
         when(request.getPathInfo()).thenReturn("/1");
         when(request.getReader()).thenReturn(new BufferedReader(new StringReader("{\"id\": 1, \"title\": \"New Title\", \"description\": \"New Description\", \"authorId\": \"invalid\"}")));
         when(response.getWriter()).thenReturn(printWriter);
-
-        AlbumServlet albumServlet = new AlbumServlet(albumService);
 
         albumServlet.doPut(request, response);
 

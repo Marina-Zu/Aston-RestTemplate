@@ -28,6 +28,11 @@ public class UserServlet extends HttpServlet {
         this.userService = AppContext.getBean(UserServiceImpl.class);
     }
 
+    public UserServlet(UserService userService) {
+        this.userService = userService;
+        this.objectMapper = new ObjectMapper();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         setJsonHeader(resp);

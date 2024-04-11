@@ -7,6 +7,8 @@ public class PostIncomingDto {
     private String content;
     private long author;
 
+    public PostIncomingDto() {
+    }
 
     public PostIncomingDto(long id, String content) {
         this.id = id;

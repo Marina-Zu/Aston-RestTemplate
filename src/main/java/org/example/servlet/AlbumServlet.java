@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @WebServlet(urlPatterns = {"/album/*"})
 public class AlbumServlet extends HttpServlet {
-    private  transient AlbumService albumService;
+    private transient AlbumService albumService;
     private final ObjectMapper objectMapper;
 
     public AlbumServlet() {

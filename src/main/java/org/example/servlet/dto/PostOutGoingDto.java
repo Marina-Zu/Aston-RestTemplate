@@ -7,6 +7,9 @@ public class PostOutGoingDto {
     private Long authorId;
     private List<Long> albumIds;
 
+    public PostOutGoingDto() {
+    }
+
     public PostOutGoingDto(String content, Long authorId, List<Long> albums) {
         this.content = content;
         this.authorId = authorId;

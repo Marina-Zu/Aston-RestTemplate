@@ -27,6 +27,11 @@ public class PostServlet extends HttpServlet {
         this.objectMapper = new ObjectMapper();
     }
 
+    public PostServlet(PostService postService) {
+        this.postService = postService;
+        this.objectMapper = new ObjectMapper();
+    }
+
     private static void setJsonHeader(HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
@@ -126,6 +131,4 @@ public class PostServlet extends HttpServlet {
         printWriter.write(responseAnswer);
         printWriter.flush();
     }
-
-
 }
