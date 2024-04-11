@@ -2,31 +2,27 @@ package org.example.servlet;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.exception.NotFoundException;
 import org.example.service.AlbumService;
 import org.example.servlet.dto.AlbumOutGoingDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.PrintWriter;
-import java.util.List;
+import java.io.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class AlbumServletTest {
     @Mock
     private AlbumService albumService;
-//    @Mock
-//    private ObjectMapper objectMapper;
+    @Mock
+    private ObjectMapper objectMapper;
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -34,13 +30,9 @@ class AlbumServletTest {
     @Mock
     private PrintWriter printWriter;
 
-   @InjectMocks
+    @InjectMocks
     private AlbumServlet albumServlet;
 
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//    }
     @Test
     void doGet() throws Exception {
         long albumId = 1L;
@@ -58,12 +50,13 @@ class AlbumServletTest {
         verify(printWriter).flush();
     }
 
+
     @Test
-    void doGetF() throws Exception {
+    void doGetInvalidAlbumId() throws Exception {
         long albumId = -1L;
 
         when(request.getPathInfo()).thenReturn("/" + albumId);
-        when(albumService.findById(albumId)).thenThrow(new RuntimeException("Some error message")); // Бросаем исключение, чтобы проверить обработку ошибки
+        when(albumService.findById(albumId)).thenThrow(new RuntimeException("Some error message"));
         when(response.getWriter()).thenReturn(printWriter);
 
         albumServlet.doGet(request, response);
@@ -77,14 +70,47 @@ class AlbumServletTest {
 
 
     @Test
-    void doDelete() {
+    void doDelete() throws IOException {
+        long albumId = 1L;
+
+        when(request.getPathInfo()).thenReturn("/" + albumId);
+        when(response.getWriter()).thenReturn(printWriter);
+
+        albumServlet.doDelete(request, response);
+
+        verify(albumService).deleteById(albumId);
+        verify(response).setStatus(HttpServletResponse.SC_NO_CONTENT);
+        verify(printWriter).write("Album with id " + albumId + " deleted");
+        verify(printWriter).flush();
+
     }
 
     @Test
-    void doPost() {
+    public void testDoPost() throws IOException {
+        String json = "";
+
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
+        when(response.getWriter()).thenReturn(printWriter);
+
+        albumServlet.doPost(request, response);
+
+        verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        verify(printWriter).write("Incorrect album Object.");
+        verify(printWriter).flush();
     }
 
     @Test
-    void doPut() {
+    public void testDoPutInValidJson() throws IOException {
+        when(request.getPathInfo()).thenReturn("/1");
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader("{\"id\": 1, \"title\": \"New Title\", \"description\": \"New Description\", \"authorId\": \"invalid\"}")));
+        when(response.getWriter()).thenReturn(printWriter);
+
+        AlbumServlet albumServlet = new AlbumServlet(albumService);
+
+        albumServlet.doPut(request, response);
+
+        verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        verify(printWriter).write("Incorrect album Object.");
+        verify(printWriter).flush();
     }
 }

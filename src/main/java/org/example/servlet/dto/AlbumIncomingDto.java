@@ -9,6 +9,12 @@ public class AlbumIncomingDto {
     public AlbumIncomingDto() {
     }
 
+    public AlbumIncomingDto(String title, String description, long authorId) {
+        this.title = title;
+        this.description = description;
+        this.authorId = authorId;
+    }
+
     public long getId() {
         return id;
     }
