@@ -40,7 +40,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostOutGoingDto findById(long id) {
         Post post = postRepository.findById(id);
-        return postDtoMapper.map(post);
+        PostOutGoingDto postOutGoingDto = postDtoMapper.map(post);
+        postOutGoingDto.setAlbumIds(postRepository.getAlbumIds(post.getId()));
+        return postOutGoingDto;
     }
 
     @Override

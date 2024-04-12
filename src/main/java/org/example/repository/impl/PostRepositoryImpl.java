@@ -33,7 +33,7 @@ public class PostRepositoryImpl implements PostRepository {
     private static final String FIND_ALL_SQL = """
             SELECT * FROM post;
             """;
-
+    private static final String FIND_ALL_ALBUM_IDS_BY_POST_ID_SQL = "SELECT album_id FROM post_album WHERE post_id = ?";
     private ConnectionManager connectionManager;
     private final UserRepository userRepository;
 
@@ -106,6 +106,7 @@ public class PostRepositoryImpl implements PostRepository {
             while (resultSet.next()) {
                 post = createPost(resultSet);
             }
+
         } catch (SQLException e) {
             throw new RepositoryException(e.getMessage());
         }
@@ -141,6 +142,22 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
+    @Override
+    public List<Long> getAlbumIds(long postId) {
+        List<Long> albumIds = new ArrayList<>();
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_ALBUM_IDS_BY_POST_ID_SQL)) {
+            preparedStatement.setLong(1, postId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                albumIds.add(resultSet.getLong("album_id"));
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException(e.getMessage());
+        }
+        return albumIds;
+    }
+
     private Post createPost(ResultSet resultSet) throws SQLException {
         Post post = new Post();
         post.setId(resultSet.getLong("id"));
@@ -150,5 +167,4 @@ public class PostRepositoryImpl implements PostRepository {
         post.setAuthor(user);
         return post;
     }
-
 }
