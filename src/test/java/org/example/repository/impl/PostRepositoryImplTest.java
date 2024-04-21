@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
@@ -79,6 +81,15 @@ class PostRepositoryImplTest extends AbstractRepositoryTest {
         assertEquals(post.getContent(), foundPost.getContent(), "Content of found post should match");
     }
 
+    @Test
+    void testFindAllSuccessful() {
+        postRepository.save(post);
+
+        List<Post> postList = postRepository.findAll();
+
+        assertFalse(postList.isEmpty());
+    }
+
 
     @Test
     void testExistsByIdSuccessful() {
@@ -86,4 +97,15 @@ class PostRepositoryImplTest extends AbstractRepositoryTest {
 
         assertTrue(postRepository.existsById(post.getId()), "Post should exist");
     }
+
+    @Test
+     void testEmptyAlbumIds() {
+        long postId = 1L;
+        List<Long> expectedAlbumIds = List.of();
+
+        List<Long> albumIds = postRepository.getAlbumIds(postId);
+
+        assertEquals(expectedAlbumIds, albumIds);
+    }
+
 }

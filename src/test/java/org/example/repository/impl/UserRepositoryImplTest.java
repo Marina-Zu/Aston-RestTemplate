@@ -1,6 +1,7 @@
 package org.example.repository.impl;
 
 import org.example.db.test.TestConnectionManager;
+import org.example.model.Album;
 import org.example.model.Post;
 import org.example.model.User;
 import org.example.repository.AbstractRepositoryTest;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @Testcontainers
 class UserRepositoryImplTest extends AbstractRepositoryTest {
@@ -112,6 +114,16 @@ class UserRepositoryImplTest extends AbstractRepositoryTest {
 
         assertEquals(expectedPosts.size() + 2, actualPosts.size(), "Number of retrieved posts should match");
     }
+
+    @Test
+     void test_empty_list_when_no_albums_found() {
+        Long authorId = 1L;
+
+        List<Album> result = userRepository.findAllByAuthorId(authorId);
+
+        assertEquals(2, result.size());
+    }
+
 
     @Test
     void testExistsByIdSuccessful() {

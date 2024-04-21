@@ -14,7 +14,6 @@ public class UserOutGoingDto {
     }
 
     public UserOutGoingDto() {
-
     }
 
     public String getUsername() {

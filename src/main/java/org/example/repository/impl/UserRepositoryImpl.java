@@ -196,10 +196,4 @@ public class UserRepositoryImpl implements UserRepository {
         return user;
     }
 
-    private Post createPost(ResultSet resultSet) throws SQLException {
-        Post post = new Post();
-        post.setId(resultSet.getLong("id"));
-        post.setContent(resultSet.getString("content"));
-        return post;
-    }
 }

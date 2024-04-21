@@ -82,7 +82,6 @@ class AlbumServletTest {
         verify(printWriter).flush();
     }
 
-
     @Test
     void testDoDeleteSuccessful() throws IOException {
         long albumId = 1L;
@@ -110,6 +109,20 @@ class AlbumServletTest {
 
         verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
         verify(printWriter).write("Incorrect album Object.");
+        verify(printWriter).flush();
+    }
+
+    @Test
+    void testDoPutAddPostSuccessful() throws IOException {
+        when(request.getPathInfo()).thenReturn("/1/addPost/2");
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader("{\"id\": 1, \"title\": \"New Title\", \"description\": \"New Description\", \"authorId\": \"invalid\"}")));
+
+        when(response.getWriter()).thenReturn(printWriter);
+
+        albumServlet.doPut(request, response);
+
+        verify(response).setStatus(HttpServletResponse.SC_OK);
+        verify(printWriter).write("Post added to album");
         verify(printWriter).flush();
     }
 

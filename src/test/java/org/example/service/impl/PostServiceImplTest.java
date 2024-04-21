@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -95,5 +96,24 @@ class PostServiceImplTest {
 
         verify(postRepository).findById(postId);
         verify(postDtoMapper).map(post);
+    }
+    @Test
+    public void testFindAllSuccessful() {
+        List<Post> posts = new ArrayList<>();
+        posts.add(new Post(1, "Content 1", new User()));
+        posts.add(new Post(2, "Content 2", new User()));
+
+        List<PostOutGoingDto> expectedDtos = Arrays.asList(
+                new PostOutGoingDto("Content 1", null, null),
+                new PostOutGoingDto("Content 2", null, null)
+        );
+        when(postRepository.findAll()).thenReturn(posts);
+        when(postDtoMapper.map(posts)).thenReturn(expectedDtos);
+
+        List<PostOutGoingDto> result = postService.findAll();
+
+        assertEquals(2, result.size());
+        assertEquals("Content 1", result.get(0).getContent());
+        assertEquals("Content 2", result.get(1).getContent());
     }
 }

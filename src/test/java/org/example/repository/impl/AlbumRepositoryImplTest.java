@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
@@ -88,6 +90,23 @@ class AlbumRepositoryImplTest extends AbstractRepositoryTest {
         assertEquals(album.getDescription(), foundAlbum.getDescription(), "Album description should match");
         assertEquals(album.getAuthorId(), foundAlbum.getAuthorId(), "Album author ID should match");
     }
+
+
+    @Test
+    void testFindAllSuccessful() {
+        album.setAuthorId(user.getId());
+        albumRepository.save(album);
+        Album album2 = new Album();
+        album2.setAuthorId(user.getId());
+        album2.setTitle("Test Album 2");
+
+        albumRepository.save(album2);
+
+        List<Album> albumsList = albumRepository.findAll();
+
+        assertFalse(albumsList.isEmpty());
+    }
+
 
     @Test
     void testExistsByIdSuccessful() {
