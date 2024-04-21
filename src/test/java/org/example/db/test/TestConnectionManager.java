@@ -9,14 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class TestConnectionManager implements ConnectionManager {
-
-    private static final String driver = "org.postgresql.Driver";
-    private static final String url = "jdbc:postgresql://localhost:5432/test_db";
-    private static final String username = "test";
-    private static final String password = "test";
-
     private HikariDataSource dataSource;
-
     private HikariConfig config = new HikariConfig();
 
     public TestConnectionManager(PostgreSQLContainer<?> postgreSQLContainer) {
