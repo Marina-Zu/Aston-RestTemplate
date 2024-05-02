@@ -1,4 +1,4 @@
-package org.example.servlet.dto;
+package org.example.dto;
 
 public class UserIncomingDto {
     private long id;

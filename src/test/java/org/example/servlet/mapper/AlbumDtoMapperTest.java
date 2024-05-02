@@ -1,9 +1,10 @@
 package org.example.servlet.mapper;
 
+import org.example.mapper.AlbumDtoMapper;
 import org.example.model.Album;
 import org.example.model.Post;
-import org.example.servlet.dto.AlbumIncomingDto;
-import org.example.servlet.dto.AlbumOutGoingDto;
+import org.example.dto.AlbumIncomingDto;
+import org.example.dto.AlbumOutGoingDto;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 

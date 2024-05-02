@@ -32,10 +32,11 @@ CREATE UNIQUE INDEX album_author_title_idx ON album (author_id, title);
 
 CREATE TABLE post_album
 (
-    id       bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
+  --  id       bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
     post_id  bigint NOT NULL,
     album_id bigint NOT NULL,
 
+    CONSTRAINT pk_post_album PRIMARY KEY (post_id, album_id),
     CONSTRAINT fk_post_id FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
     CONSTRAINT fk_album_id FOREIGN KEY (album_id) REFERENCES album (id) ON DELETE CASCADE
 );

@@ -1,7 +1,7 @@
 package org.example.service;
 
-import org.example.servlet.dto.PostIncomingDto;
-import org.example.servlet.dto.PostOutGoingDto;
+import org.example.dto.PostIncomingDto;
+import org.example.dto.PostOutGoingDto;
 
 import java.util.List;
 

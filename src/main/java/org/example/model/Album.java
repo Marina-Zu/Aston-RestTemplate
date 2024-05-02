@@ -23,9 +23,10 @@ public class Album {
     @Column(name = "author_id", nullable = false)
     private long authorId;
 
-    @ManyToMany
-    @JoinTable(name = "post_album", joinColumns = @JoinColumn(name = "album_id"), inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private List<Post> posts;
+   // @ManyToMany
+    @ManyToMany(mappedBy = "albums")
+ //   @JoinTable(name = "post_album", joinColumns = @JoinColumn(name = "album_id"), inverseJoinColumns = @JoinColumn(name = "post_id"))
+    private List<Post> posts = new ArrayList<>();
 
     public Album() {
     }

@@ -1,7 +1,7 @@
 package org.example.service;
 
-import org.example.servlet.dto.UserIncomingDto;
-import org.example.servlet.dto.UserOutGoingDto;
+import org.example.dto.UserIncomingDto;
+import org.example.dto.UserOutGoingDto;
 
 import java.util.List;
 

@@ -2,46 +2,70 @@ package org.example.service.impl;
 
 import org.example.exception.NotFoundException;
 import org.example.model.Album;
+import org.example.model.Post;
 import org.example.repository.AlbumRepository;
 import org.example.repository.PostRepository;
 import org.example.service.AlbumService;
-import org.example.servlet.dto.AlbumIncomingDto;
-import org.example.servlet.dto.AlbumOutGoingDto;
-import org.example.servlet.mapper.AlbumDtoMapper;
+import org.example.dto.AlbumIncomingDto;
+import org.example.dto.AlbumOutGoingDto;
+import org.example.mapper.AlbumDtoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
 public class AlbumServiceImpl implements AlbumService {
-    private final AlbumDtoMapper albumDtoMapper;
-    private final AlbumRepository albumRepository;
-    private final PostRepository postRepository;
+    @Autowired
+    private AlbumDtoMapper albumDtoMapper;
+    @Autowired
+    private AlbumRepository albumRepository;
+    @Autowired
+    private PostRepository postRepository;
 
-    public AlbumServiceImpl(AlbumRepository albumRepository, AlbumDtoMapper albumDtoMapper, PostRepository postRepository) {
-        this.albumRepository = albumRepository;
-        this.albumDtoMapper = albumDtoMapper;
-        this.postRepository = postRepository;
-    }
+//    public AlbumServiceImpl(AlbumRepository albumRepository, AlbumDtoMapper albumDtoMapper, PostRepository postRepository) {
+//        this.albumRepository = albumRepository;
+//        this.albumDtoMapper = albumDtoMapper;
+//        this.postRepository = postRepository;
+//    }
 
     @Override
+    @Transactional
     public AlbumOutGoingDto save(AlbumIncomingDto albumIncomingDto) {
         Album album = albumRepository.save(albumDtoMapper.map(albumIncomingDto));
         return albumDtoMapper.map(album);
     }
 
     @Override
-    public void update(AlbumIncomingDto albumIncomingDto) {
-        Album album = albumDtoMapper.map(albumIncomingDto);
-        albumRepository.update(album);
+    @Transactional
+    public void update(AlbumIncomingDto albumIncomingDto) throws NotFoundException {
+        Album album = searchAlbumById(albumIncomingDto.getId());
+        if (albumIncomingDto.getTitle() != null) {
+            album.setTitle(albumIncomingDto.getTitle());
+        }
+        if (albumIncomingDto.getDescription() != null) {
+            album.setDescription(albumIncomingDto.getDescription());
+        }
+        albumRepository.save(album);
     }
 
     @Override
+    @Transactional
     public boolean deleteById(long id) {
-        return albumRepository.deleteById(id);
+        albumRepository.deleteById(id);
+        return true;
     }
 
     @Override
     public AlbumOutGoingDto findById(long id) {
-        Album album = albumRepository.findById(id);
+        Album album = null;
+        try {
+            album = albumRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Album not found"));
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return albumDtoMapper.map(album);
     }
 
@@ -52,13 +76,22 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public void addPost(long albumId, long postId) throws NotFoundException {
-        checkExistAlbum(albumId);
-        checkExistPost(postId);
+    @Transactional
+    public void addPostInAlbum(long albumId, long postId) throws NotFoundException {
+//        checkExistAlbum(albumId);
+//        checkExistPost(postId);
 
-        Album album = albumRepository.findById(albumId);
-        album.getPosts().add(postRepository.findById(postId));
-        albumRepository.addPost(albumId, postId);
+        Album album = albumRepository.findById(albumId)
+                .orElseThrow(() -> new NotFoundException("Album not found"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException("Post not found"));
+        album.getPosts().add(post);
+        albumRepository.save(album);
+    }
+
+    private Album searchAlbumById(long id) throws NotFoundException {
+        return albumRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Album not found"));
     }
 
 

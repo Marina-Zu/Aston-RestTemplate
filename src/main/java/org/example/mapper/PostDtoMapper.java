@@ -1,17 +1,17 @@
-package org.example.servlet.mapper;
+package org.example.mapper;
 
 import org.example.model.Album;
 import org.example.model.Post;
 import org.example.model.User;
-import org.example.servlet.dto.PostIncomingDto;
-import org.example.servlet.dto.PostOutGoingDto;
+import org.example.dto.PostIncomingDto;
+import org.example.dto.PostOutGoingDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PostDtoMapper {
     @Mapping(target = "author", source = "author")
     Post map(PostIncomingDto postIncomingDto);

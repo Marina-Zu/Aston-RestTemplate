@@ -1,24 +1,30 @@
 package org.example.service.impl;
 
+import org.example.exception.DataValidationException;
+import org.example.exception.NotFoundException;
 import org.example.model.Post;
 import org.example.repository.PostRepository;
 import org.example.service.PostService;
-import org.example.servlet.dto.PostIncomingDto;
-import org.example.servlet.dto.PostOutGoingDto;
-import org.example.servlet.mapper.PostDtoMapper;
+import org.example.dto.PostIncomingDto;
+import org.example.dto.PostOutGoingDto;
+import org.example.mapper.PostDtoMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
 public class PostServiceImpl implements PostService {
-    private final PostRepository postRepository;
-    private final PostDtoMapper postDtoMapper;
+    private PostRepository postRepository;
+    private PostDtoMapper postDtoMapper;
 
-    public PostServiceImpl(PostRepository postRepository, PostDtoMapper postDtoMapper) {
-        this.postRepository = postRepository;
-        this.postDtoMapper = postDtoMapper;
-    }
+//    public PostServiceImpl(PostRepository postRepository, PostDtoMapper postDtoMapper) {
+//        this.postRepository = postRepository;
+//        this.postDtoMapper = postDtoMapper;
+//    }
 
     @Override
+    @Transactional
     public PostOutGoingDto save(PostIncomingDto postIncomingDto) {
         Post post1 = postDtoMapper.map(postIncomingDto);
 
@@ -27,19 +33,31 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void update(PostIncomingDto postIncomingDto) {
-        Post post = postDtoMapper.map(postIncomingDto);
-        postRepository.update(post);
+        Post post = searchPostById(postIncomingDto.getId());
+        if (postIncomingDto.getContent() != null) {
+            post.setContent(postIncomingDto.getContent());
+        }
+        postRepository.save(post);
     }
 
     @Override
+    @Transactional
     public boolean deleteById(long id) {
-        return postRepository.deleteById(id);
+        postRepository.deleteById(id);
+        return true;
     }
 
     @Override
     public PostOutGoingDto findById(long id) {
-        Post post = postRepository.findById(id);
+        Post post = null;
+        try {
+            post = postRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Post not found"));
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
         PostOutGoingDto postOutGoingDto = postDtoMapper.map(post);
         postOutGoingDto.setAlbumIds(postRepository.getAlbumIds(post.getId()));
         return postOutGoingDto;
@@ -49,5 +67,10 @@ public class PostServiceImpl implements PostService {
     public List<PostOutGoingDto> findAll() {
         List<Post> posts = postRepository.findAll();
         return postDtoMapper.map(posts);
+    }
+
+    private Post searchPostById(long id){
+        return postRepository.findById(id)
+                .orElseThrow(() -> new DataValidationException("User with id " + id + " not found."));
     }
 }

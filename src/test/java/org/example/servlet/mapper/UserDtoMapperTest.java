@@ -1,13 +1,13 @@
 package org.example.servlet.mapper;
 
+import org.example.mapper.UserDtoMapper;
 import org.example.model.Album;
 import org.example.model.Post;
 import org.example.model.User;
-import org.example.servlet.dto.UserIncomingDto;
-import org.example.servlet.dto.UserOutGoingDto;
+import org.example.dto.UserIncomingDto;
+import org.example.dto.UserOutGoingDto;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import org.mockito.InjectMocks;
 
 import java.util.Arrays;
 import java.util.Collections;

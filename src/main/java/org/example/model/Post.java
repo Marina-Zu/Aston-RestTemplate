@@ -20,7 +20,12 @@ public class Post {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @ManyToMany(mappedBy = "posts")
+    @ManyToMany
+    @JoinTable(
+            name = "post_album",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "album_id")
+    )
     private List<Album> albums;
 
     public Post() {

@@ -22,7 +22,7 @@ public class User {
     @JsonIgnore
     private List<Post> posts;
 
-    @ManyToMany(mappedBy = "albums")
+    @ManyToMany
     private List<Album> albums;
 
     public User() {

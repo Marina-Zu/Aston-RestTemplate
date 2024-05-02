@@ -1,12 +1,13 @@
 package org.example.repository;
 
 import org.example.model.Album;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface AlbumRepository extends JpaRepository<Album, Long> {
 
-public interface AlbumRepository extends Repository<Album, Long> {
+    //  List<Long> findAllPostIdsByAlbumId(Long albumId);
 
-    List<Long> findAllPostIdsByAlbumId(Long albumId);
-
-    void addPost(long albumId, long postId);
+    //  void addPost(long albumId, long postId);
 }
