@@ -5,7 +5,7 @@
 //
 //public final class PropertiesUtil {
 //    private static final Properties PROPERTIES = new Properties();
-//    private static final String PROPERTIES_FILE = "db.properties";
+//    private static final String PROPERTIES_FILE = "applicaton.properties";
 //
 //    static {
 //        loadProperties();

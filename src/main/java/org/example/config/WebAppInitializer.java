@@ -8,14 +8,20 @@
 //import org.springframework.web.servlet.DispatcherServlet;
 //
 //public class WebAppInitializer implements WebApplicationInitializer {
+//
 //    @Override
 //    public void onStartup(ServletContext servletContext) throws ServletException {
 //        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+//
+//        // Регистрируем конфигурационный класс
 //        context.register(AppConfig.class);
 //        context.setServletContext(servletContext);
+//        context.refresh(); // Важно: обязательно вызывать refresh!
 //
-//        ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
-//        servlet.setLoadOnStartup(1);
-//        servlet.addMapping("/");
+//        // Создаем и регистрируем DispatcherServlet
+//        DispatcherServlet dispatcherServlet = new DispatcherServlet(context);
+//        ServletRegistration.Dynamic registration = servletContext.addServlet("dispatcher", dispatcherServlet);
+//        registration.setLoadOnStartup(1);
+//        registration.addMapping("/");
 //    }
 //}

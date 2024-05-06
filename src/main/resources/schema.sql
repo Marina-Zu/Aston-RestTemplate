@@ -32,7 +32,7 @@ CREATE UNIQUE INDEX album_author_title_idx ON album (author_id, title);
 
 CREATE TABLE post_album
 (
-  --  id       bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
+    --  id       bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
     post_id  bigint NOT NULL,
     album_id bigint NOT NULL,
 

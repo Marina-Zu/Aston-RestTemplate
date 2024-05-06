@@ -17,16 +17,15 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserDtoMapper userDtoMapper;
 
-//    public UserServiceImpl(UserRepository userRepository, UserDtoMapper userDtoMapper) {
-//        this.userRepository = userRepository;
-//        this.userDtoMapper = userDtoMapper;
-//    }
+    private final UserRepository userRepository;
+    private final UserDtoMapper userDtoMapper;
 
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, UserDtoMapper userDtoMapper) {
+        this.userRepository = userRepository;
+        this.userDtoMapper = userDtoMapper;
+    }
 
     @Override
     @Transactional
@@ -38,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(UserIncomingDto userIncomingDto) {
-        //  User user = userDtoMapper.mapToUser(userIncomingDto);
+       // User user = userDtoMapper.mapToUser(userIncomingDto);
         User user = searchUserById(userIncomingDto.getId());
         user.setUsername(userIncomingDto.getUsername());
         userRepository.save(user);

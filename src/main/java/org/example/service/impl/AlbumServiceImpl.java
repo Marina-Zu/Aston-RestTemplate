@@ -17,18 +17,17 @@ import java.util.List;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
-    @Autowired
-    private AlbumDtoMapper albumDtoMapper;
-    @Autowired
-    private AlbumRepository albumRepository;
-    @Autowired
-    private PostRepository postRepository;
 
-//    public AlbumServiceImpl(AlbumRepository albumRepository, AlbumDtoMapper albumDtoMapper, PostRepository postRepository) {
-//        this.albumRepository = albumRepository;
-//        this.albumDtoMapper = albumDtoMapper;
-//        this.postRepository = postRepository;
-//    }
+    private final AlbumDtoMapper albumDtoMapper;
+    private final AlbumRepository albumRepository;
+    private final PostRepository postRepository;
+
+    @Autowired
+    public AlbumServiceImpl(AlbumRepository albumRepository, AlbumDtoMapper albumDtoMapper, PostRepository postRepository) {
+        this.albumRepository = albumRepository;
+        this.albumDtoMapper = albumDtoMapper;
+        this.postRepository = postRepository;
+    }
 
     @Override
     @Transactional

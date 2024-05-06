@@ -11,10 +11,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/post")
 public class PostController {
-    @Autowired
-    private PostService postService;
 
-  //  private final ObjectMapper objectMapper;
+    private final PostService postService;
+
+    @Autowired
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     @GetMapping("/all")
     public List<PostOutGoingDto> getAllPosts() {

@@ -10,6 +10,6 @@ abstract public class AbstractRepositoryTest {
             .withDatabaseName("test_db")
             .withUsername("test")
             .withPassword("test")
-            .withInitScript("db-migration.sql");
+            .withInitScript("schema.sql");
 
 }

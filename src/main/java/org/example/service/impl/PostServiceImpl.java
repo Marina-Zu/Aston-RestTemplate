@@ -8,6 +8,7 @@ import org.example.service.PostService;
 import org.example.dto.PostIncomingDto;
 import org.example.dto.PostOutGoingDto;
 import org.example.mapper.PostDtoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,19 +16,19 @@ import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
-    private PostRepository postRepository;
-    private PostDtoMapper postDtoMapper;
+    private final PostRepository postRepository;
+    private final PostDtoMapper postDtoMapper;
 
-//    public PostServiceImpl(PostRepository postRepository, PostDtoMapper postDtoMapper) {
-//        this.postRepository = postRepository;
-//        this.postDtoMapper = postDtoMapper;
-//    }
+    @Autowired
+    public PostServiceImpl(PostRepository postRepository, PostDtoMapper postDtoMapper) {
+        this.postRepository = postRepository;
+        this.postDtoMapper = postDtoMapper;
+    }
 
     @Override
     @Transactional
     public PostOutGoingDto save(PostIncomingDto postIncomingDto) {
         Post post1 = postDtoMapper.map(postIncomingDto);
-
         Post post = postRepository.save(post1);
         return postDtoMapper.map(post);
     }
@@ -69,7 +70,7 @@ public class PostServiceImpl implements PostService {
         return postDtoMapper.map(posts);
     }
 
-    private Post searchPostById(long id){
+    private Post searchPostById(long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new DataValidationException("User with id " + id + " not found."));
     }

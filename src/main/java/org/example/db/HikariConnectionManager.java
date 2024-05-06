@@ -1,20 +1,20 @@
-package org.example.db;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-public class HikariConnectionManager implements ConnectionManager {
-    private final DataSource dataSource;
-
-    public HikariConnectionManager(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    @Override
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
+//package org.example.db;
+//
+//import javax.sql.DataSource;
+//import java.sql.Connection;
+//import java.sql.SQLException;
+//
+//public class HikariConnectionManager implements ConnectionManager {
+//    private final DataSource dataSource;
+//
+//    public HikariConnectionManager(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
+//
+//    @Override
+//    public Connection getConnection() throws SQLException {
+//        return dataSource.getConnection();
+//    }
 //    private static final String DRIVER_CLASS_KEY = "db.driver-class-name";
 //    private static final String URL_KEY = "db.url";
 //    private static final String USERNAME_KEY = "db.username";
@@ -47,4 +47,4 @@ public class HikariConnectionManager implements ConnectionManager {
 //    }
 
 
-}
+//}

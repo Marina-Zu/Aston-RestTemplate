@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.exception.NotFoundException;
+import org.example.service.AlbumService;
 import org.example.service.impl.AlbumServiceImpl;
 import org.example.dto.AlbumIncomingDto;
 import org.example.dto.AlbumOutGoingDto;
@@ -12,10 +13,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/album")
 public class AlbumController {
-    @Autowired
-    private AlbumServiceImpl albumService;
 
-    // private final ObjectMapper objectMapper;
+    private final AlbumService albumService;
+
+    @Autowired
+    public AlbumController(AlbumService albumService) {
+        this.albumService = albumService;
+    }
 
     @GetMapping("/all")
     public List<AlbumOutGoingDto> getAll() {
