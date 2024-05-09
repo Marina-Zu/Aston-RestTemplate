@@ -24,7 +24,7 @@ public class PostServiceApp {
 
         Context context = tomcat.addContext("", null);
 
-       // SessionFactory sf = new Configuration().configure().buildSessionFactory();
+//        SessionFactory sf = new Configuration().configure().buildSessionFactory();
 
         AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
         applicationContext.setServletContext(context.getServletContext());
