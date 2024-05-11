@@ -1,9 +1,8 @@
 package org.example.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.service.UserService;
 import org.example.dto.UserIncomingDto;
 import org.example.dto.UserOutGoingDto;
+import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-   @Autowired
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }

@@ -1,10 +1,9 @@
 package org.example.controller;
 
-import org.example.exception.NotFoundException;
-import org.example.service.AlbumService;
-import org.example.service.impl.AlbumServiceImpl;
 import org.example.dto.AlbumIncomingDto;
 import org.example.dto.AlbumOutGoingDto;
+import org.example.exception.NotFoundException;
+import org.example.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
